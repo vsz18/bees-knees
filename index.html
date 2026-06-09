@@ -96,9 +96,11 @@
     .sh-tag.mods{background:var(--warn-dim);border:1px solid var(--warn-border);color:var(--warn)}
     .sh-tag.ok{background:var(--safe-dim);border:1px solid rgba(0,230,118,.2);color:var(--safe)}
     .block-card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
-    .block-head{background:var(--card2);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+    .block-head{background:var(--card2);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);gap:8px}
+    .block-head-left{display:flex;flex-direction:column;gap:2px}
     .block-name{font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
-    .block-fmt{font-size:11px;color:var(--text3);font-weight:600;max-width:55%;text-align:right}
+    .block-fmt{font-size:11px;color:var(--text3);font-weight:600}
+    .block-timer{font-size:22px;font-weight:900;color:var(--accent);letter-spacing:-.5px;flex-shrink:0}
     .ex-row{padding:11px 14px;display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .15s}
     .ex-row:last-child{border-bottom:none}
     .ex-row:active{background:rgba(255,255,255,.02)}
@@ -172,37 +174,6 @@
     .stat-box{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center}
     .stat-n{font-size:22px;font-weight:900;color:var(--accent);line-height:1}
     .stat-l{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:4px;font-weight:700}
-
-    /* AI CHAT */
-    .chat-box{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:10px}
-    .chat-head{background:var(--card2);padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-    .chat-head-icon{font-size:20px}
-    .chat-head-title{font-size:14px;font-weight:800}
-    .chat-head-sub{font-size:12px;color:var(--text2);margin-top:1px}
-    .chat-key-setup{padding:16px;display:flex;flex-direction:column;gap:10px}
-    .chat-key-label{font-size:13px;color:var(--text2);line-height:1.5}
-    .chat-key-row{display:flex;gap:8px}
-    .chat-key-input{flex:1;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;font-family:inherit;outline:none}
-    .chat-key-input:focus{border-color:var(--accent-border)}
-    .chat-key-btn{padding:10px 16px;background:var(--accent);color:#000;border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap}
-    .chat-key-note{font-size:11px;color:var(--text3);font-style:italic}
-    .chat-suggestions{padding:10px 14px 0;display:flex;flex-wrap:wrap;gap:6px}
-    .chat-sug{padding:6px 12px;background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:16px;font-size:12px;color:var(--accent);cursor:pointer;font-weight:600;transition:background .15s}
-    .chat-sug:active{background:rgba(0,212,255,.2)}
-    .chat-msgs{padding:14px;max-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
-    .chat-msgs::-webkit-scrollbar{width:0}
-    .msg{max-width:88%;padding:10px 13px;border-radius:12px;font-size:13px;line-height:1.55}
-    .msg.user{background:var(--accent);color:#000;align-self:flex-end;border-radius:12px 12px 3px 12px;font-weight:600}
-    .msg.ai{background:var(--card2);color:var(--text);align-self:flex-start;border-radius:12px 12px 12px 3px;border:1px solid var(--border2)}
-    .msg.thinking{color:var(--text3);font-style:italic}
-    .chat-input-row{padding:10px 14px 14px;display:flex;gap:8px;border-top:1px solid var(--border)}
-    .chat-input{flex:1;background:var(--card2);border:1px solid var(--border2);border-radius:20px;padding:10px 14px;color:var(--text);font-size:14px;font-family:inherit;outline:none;resize:none;max-height:80px}
-    .chat-input:focus{border-color:var(--accent-border)}
-    .chat-send{width:38px;height:38px;background:var(--accent);border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .2s;align-self:flex-end}
-    .chat-send:active{opacity:.8}
-    .chat-send:disabled{opacity:.4;cursor:default}
-    .chat-send svg{width:16px;height:16px;fill:#000}
-    .chat-reset{font-size:11px;color:var(--text3);text-align:center;padding:0 14px 10px;cursor:pointer;text-decoration:underline}
 
     /* RULES / TIMELINE */
     .proc-card{background:linear-gradient(135deg,rgba(255,193,7,.06),rgba(0,0,0,0));border:1px solid rgba(255,193,7,.22);border-radius:12px;padding:16px;margin-bottom:10px}
@@ -358,18 +329,6 @@
         </div>
       </div>
 
-      <div class="section-label">Ask Anything</div>
-      <div class="chat-box" id="chat-box">
-        <div class="chat-head">
-          <div class="chat-head-icon">🧠</div>
-          <div>
-            <div class="chat-head-title">AI Research Assistant</div>
-            <div class="chat-head-sub">Ask about your procedure, recovery, or prehab</div>
-          </div>
-        </div>
-        <div id="chat-body"></div>
-      </div>
-
       <div class="section-label">Recovery Roadmap</div>
       <div class="tl-item"><div class="tl-line"><div class="tl-dot now"></div><div class="tl-bar"></div></div><div class="tl-content"><div class="tl-phase now">Now — Prehab</div><div class="tl-title">Build Your Foundation</div><div class="tl-desc">Strengthen quads, glutes, and hips. Every unit of strength you build now directly accelerates post-op recovery.</div></div></div>
       <div class="tl-item"><div class="tl-line"><div class="tl-dot fut"></div><div class="tl-bar"></div></div><div class="tl-content"><div class="tl-phase fut">Next — Procedure</div><div class="tl-title">BMAC + Bioplasty</div><div class="tl-desc">Outpatient, 1–2 hours. Expect 4–8 weeks of protected weight-bearing post-op.</div></div></div>
@@ -440,7 +399,7 @@ const SESSIONS = [
   {
     id: 0, label: 'UPPER', title: 'SQUAD — UPPER', date: 'JUNE 9/10',
     blocks: [
-      { name: 'BLOCK A', fmt: 'Every 2:30 × 4 sets',
+      { name: 'BLOCK A', fmt: 'Every 2:30 × 4 sets', mins: 10,
         exercises: [
           { name: 'Dual Kettlebell Bridged Floor Press', reps: '8', type: 'safe',
             howTo: 'Lie on your back with knees bent and feet flat. Lift your hips into a glute bridge. Hold a kettlebell in each hand at your chest. Press both overhead to full arm extension, then lower with control. Keep the glute squeeze throughout — this is a full-body tension exercise, not just a chest press.' },
@@ -448,7 +407,7 @@ const SESSIONS = [
             howTo: 'Prop a bench at roughly 45 degrees. Lie chest-down on the incline, one arm dangling with a dumbbell. Row it toward your hip, keeping your elbow close to your body. Squeeze your shoulder blade hard at the top, lower with full control. Keeps your torso stable so it is pure lat and upper back.' }
         ]
       },
-      { name: 'BLOCK B', fmt: 'As Many Rounds As Possible',
+      { name: 'BLOCK B', fmt: 'As Many Rounds As Possible', mins: 12,
         exercises: [
           { name: 'Tempo Push-Up (3 seconds down, 3 hold, 1 up)', reps: '8', type: 'safe',
             howTo: 'Start in a high plank with hands just wider than shoulder width. Lower your chest to the floor over 3 full seconds, pause at the bottom for 3 seconds, then press back up in 1 second. Start on your knees if needed — the slow tempo is the entire point, not the load.' },
@@ -458,7 +417,7 @@ const SESSIONS = [
             howTo: 'Lie on your back and raise both legs straight up toward the ceiling. Hold one dumbbell in both hands with arms extended. Crunch upward, reaching the dumbbell toward your feet. Control the return — do not let your shoulder blades crash back down. Your legs stay vertical throughout.' }
         ]
       },
-      { name: 'BLOCK C', fmt: '3–4 rounds, rest 30–40 seconds',
+      { name: 'BLOCK C', fmt: '3–4 rounds, rest 30–40 seconds', mins: 12,
         exercises: [
           { name: 'Barbell Strict Press', reps: '5', type: 'safe',
             howTo: 'Hold a barbell at shoulder height with a slightly wider than shoulder-width grip, elbows just in front of the bar. Press it directly overhead to full lockout. No leg drive whatsoever — this is a pure shoulder and tricep press. Lower under control back to shoulder height.' },
@@ -468,7 +427,7 @@ const SESSIONS = [
             howTo: 'Stand with feet hip-width apart, holding a kettlebell at your hips or chest for counterbalance. Draw slow, deliberate circles with your hips — clockwise for your reps, then counterclockwise. Move from the hip joint, not the knee. This is a hip mobility drill with a light load.' }
         ]
       },
-      { name: 'CONDITIONING', fmt: 'As Many Rounds As Possible — 1:1 work:rest with partner',
+      { name: 'CONDITIONING', fmt: 'As Many Rounds As Possible — 1:1 work:rest with partner', mins: 12,
         exercises: [
           { name: 'Burpee', reps: '30 total', type: 'modify',
             howTo: 'Stand tall. Step one foot back to a plank, then the other. Optional push-up. Step one foot back forward, then the other, and stand. No jumping at any point.',
@@ -484,7 +443,7 @@ const SESSIONS = [
   {
     id: 1, label: 'LOWER', title: 'SQUAD — LOWER', date: 'JUNE 11/12',
     blocks: [
-      { name: 'BLOCK A', fmt: 'Every 2:30 × 4 sets',
+      { name: 'BLOCK A', fmt: 'Every 2:30 × 4 sets', mins: 10,
         exercises: [
           { name: 'Goblet Lateral Squat (3-second lowering)', reps: '6.6 each side', type: 'modify',
             howTo: 'Hold a kettlebell at your chest. Take a wide stance. Shift your weight to one side and bend that knee while keeping the other leg straight. Take 3 seconds on the way down. Push through the working heel to return.',
@@ -494,7 +453,7 @@ const SESSIONS = [
             mod: 'This replaces the Box Jump entirely. The step-down is the important part — take 3 full seconds on the descent. This slow eccentric builds exactly the quad control needed for your recovery. No jumping, no landing.' }
         ]
       },
-      { name: 'BLOCK B', fmt: 'As Many Rounds As Possible',
+      { name: 'BLOCK B', fmt: 'As Many Rounds As Possible', mins: 12,
         exercises: [
           { name: 'Single-Leg Romanian Deadlift to Knee Drive', reps: '5.5 each side', type: 'safe',
             howTo: 'Stand on one leg. Hinge at the hip, reaching your opposite hand toward the floor while the non-standing leg extends behind you. Return to standing, then immediately drive the back knee forward to hip height. That is one rep. The standing knee stays soft (never locked) throughout.' },
@@ -505,7 +464,7 @@ const SESSIONS = [
             note: 'Generally safe. Monitor for a deep, aching pain in the bone just below the kneecap — that is the BML site responding to the loading. Pain under 3/10 is acceptable. At 3/10 or above, do flat-floor calf raises instead.' }
         ]
       },
-      { name: 'BLOCK C', fmt: '3–4 rounds',
+      { name: 'BLOCK C', fmt: '3–4 rounds', mins: 12,
         exercises: [
           { name: 'Barbell Reverse Lunge (flat floor)', reps: '5.5 each side', type: 'modify',
             howTo: 'Hold a barbell on your back or dumbbells at your sides. Step backward with one foot, lowering your back knee toward the floor. Push through your front heel to return to standing.',
@@ -516,7 +475,7 @@ const SESSIONS = [
             howTo: 'Hold a heavy kettlebell in one hand at your side, like a suitcase. March in place bringing your knees to hip height. Resist the urge to lean toward the weight — stay completely upright. The challenge is core and hip stability, not just carrying the load. Switch hands for the second set of 12.' }
         ]
       },
-      { name: 'CONDITIONING', fmt: 'Sprint — Every Minute On the Minute × 9',
+      { name: 'CONDITIONING', fmt: 'Sprint — Every Minute On the Minute × 9', mins: 9,
         exercises: [
           { name: 'Minute 1: Assault Bike', reps: '10 calories', type: 'safe',
             howTo: 'Push through a full sprint for the entire minute. The bike is excellent for your condition — knees stay in a safe flexion range throughout, and the upper body drive adds to the intensity without extra joint load.' },
@@ -532,7 +491,7 @@ const SESSIONS = [
   {
     id: 2, label: 'PULL', title: 'FULL BODY PULL', date: 'OCT 9/10',
     blocks: [
-      { name: 'STRENGTH', fmt: 'As Many Rounds As Possible — aim for 4 rounds',
+      { name: 'STRENGTH', fmt: 'As Many Rounds As Possible — aim for 4 rounds', mins: 12,
         exercises: [
           { name: 'Pull-Up', reps: '10', type: 'safe',
             howTo: 'Hang from a bar with hands shoulder-width apart, palms facing away. Initiate by depressing your shoulder blades, then drive your elbows down toward your hips to pull your chest to the bar. Lower with full control. Use a band for assistance if needed, or do jumping pull-ups with a slow 5-second lowering.' },
@@ -542,7 +501,7 @@ const SESSIONS = [
             howTo: 'Place one hand on a bench for support. Hinge forward with a flat back. Hold a dumbbell in the free hand. Row it to your hip, keeping your elbow tight to your body. Full stretch at the bottom, full shoulder blade squeeze at the top. "Three-point" means two feet and one hand create a stable tripod.' }
         ]
       },
-      { name: 'STRENGTH', fmt: 'Every 3 minutes × 4 sets',
+      { name: 'STRENGTH', fmt: 'Every 3 minutes × 4 sets', mins: 12,
         exercises: [
           { name: 'Dumbbell Bent-Over Row', reps: '12', type: 'safe',
             howTo: 'Stand with feet hip-width apart. Hinge forward at the hips until your torso is nearly parallel to the floor, back flat. Hold a dumbbell in each hand hanging at arm\'s length. Pull both to your hips simultaneously, leading with your elbows. Control the lowering over 2–3 seconds.' },
@@ -552,7 +511,7 @@ const SESSIONS = [
             howTo: 'Stand holding dumbbells with palms facing inward (neutral/hammer grip). Curl both arms up to shoulder height, keeping the palms-facing-in position throughout. Lower slowly. Works the brachialis and brachioradialis in addition to the bicep.' }
         ]
       },
-      { name: 'CONDITIONING', fmt: 'As Many Rounds As Possible — complete both machines',
+      { name: 'CONDITIONING', fmt: 'As Many Rounds As Possible — complete both machines', mins: 12,
         exercises: [
           { name: 'Ski Erg', reps: '150 meters', type: 'safe',
             howTo: 'Grip both handles overhead. Pull them down in a sweeping arc to your hips, hinging slightly at the hip and bending your knees minimally. The power comes from your lats, triceps, and core. Reset the handles slowly overhead and repeat continuously. Target a smooth, sustainable pace for 150m.' },
@@ -565,7 +524,7 @@ const SESSIONS = [
             mod: 'Keep your feet flat and use minimal knee bend in the catch — think "hip hinge catch" rather than a squat catch. The osteophytes and cartilage loss make a deep-squat catch position risky. If the catch is forcing your knees into deep bend, reduce the weight significantly.' }
         ]
       },
-      { name: 'FINISHER', fmt: '3 × 12-minute blocks',
+      { name: 'FINISHER', fmt: '3 × 12-minute blocks', mins: 4,
         exercises: [
           { name: 'Hollow Hold', reps: '30 seconds', type: 'safe',
             howTo: 'Lie on your back. Press your entire lower back into the floor and hold it there. Extend both arms overhead and both legs out low (the lower the legs, the harder the exercise). Hold this "banana" shape. You should feel your abs working intensely just to maintain the position — no crunching motion required.' },
@@ -598,32 +557,12 @@ const WALK_TIPS = [
   { icon:'🔴', label:'Stop if', desc:'Knee pain rises above 3/10, swelling increases, or the knee feels hot after the walk.' }
 ];
 
-const SUGGESTIONS = [
-  'What exactly happens during the procedure?',
-  'How long is recovery?',
-  'Will the cartilage grow back?',
-  'Why is prehab so important?'
-];
-
-const SYSTEM_PROMPT = `You are a knowledgeable and compassionate assistant helping a patient prepare for BMAC (Bone Marrow Aspirate Concentrate) + Intraosseous Bioplasty knee surgery.
-
-Patient context:
-- Full-thickness Grade IV cartilage loss of the patella (kneecap)
-- Bone marrow edema lesion (BML) beneath the cartilage defect
-- Osteophytes (bone spurs) present
-- Currently doing prehabilitation: 2–3 strength sessions/week plus daily walking
-- Goal: optimize prehab before procedure, then return to recreational running post-op
-
-Answer questions clearly, helpfully, and concisely about the procedure, recovery timeline, what the treatment involves, prehab benefits, and what to expect. Keep responses to 3–5 sentences unless more detail is clearly needed. Use plain language. Always suggest that specific medical questions be confirmed with their surgeon.`;
-
 // ═══════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════
 const state = {
   tab:'week', sessCount:2, selDay:null,
-  activeSession:0, expandedEx:null, expandedPrehab:null,
-  chatHistory:[], chatLoading:false,
-  apiKey: localStorage.getItem('ji_api_key') || ''
+  activeSession:0, expandedEx:null, expandedPrehab:null
 };
 
 // ═══════════════════════════════════════════════════
@@ -736,7 +675,7 @@ function renderWorkout() {
       <span class="sh-tag ok">Tap any exercise for how-to</span>
     </div>`;
   sess.blocks.forEach(block => {
-    html += `<div class="block-card"><div class="block-head"><span class="block-name">${block.name}</span><span class="block-fmt">${block.fmt}</span></div>`;
+    html += `<div class="block-card"><div class="block-head"><div class="block-head-left"><span class="block-name">${block.name}</span><span class="block-fmt">${block.fmt}</span></div><span class="block-timer">${block.mins}:00</span></div>`;
     block.exercises.forEach((ex, i) => {
       const key = `${sess.id}-${block.name}-${i}`;
       const open = state.expandedEx === key;
@@ -805,109 +744,12 @@ function initNutrition() {
 }
 
 // ═══════════════════════════════════════════════════
-// AI CHAT
-// ═══════════════════════════════════════════════════
-function renderChat() {
-  const body = document.getElementById('chat-body');
-  if (!state.apiKey) {
-    body.innerHTML = `<div class="chat-key-setup">
-      <div class="chat-key-label">Add your Anthropic API key to ask AI questions about your procedure and recovery.</div>
-      <div class="chat-key-row">
-        <input class="chat-key-input" id="api-key-input" type="password" placeholder="sk-ant-api03-..." autocomplete="off"/>
-        <button class="chat-key-btn" id="api-key-save">Enable</button>
-      </div>
-      <div class="chat-key-note">Your key is stored locally on this device only and never shared.</div>
-    </div>`;
-    document.getElementById('api-key-save').addEventListener('click', () => {
-      const val = document.getElementById('api-key-input').value.trim();
-      if (val) { state.apiKey = val; localStorage.setItem('ji_api_key', val); renderChat(); }
-    });
-    document.getElementById('api-key-input').addEventListener('keydown', e => {
-      if (e.key === 'Enter') document.getElementById('api-key-save').click();
-    });
-    return;
-  }
-  let msgsHtml = '';
-  if (state.chatHistory.length === 0) {
-    msgsHtml = `<div class="msg ai">Hi! I can answer questions about your BMAC + Bioplasty procedure, recovery, what to expect, or how prehab helps. What would you like to know?</div>`;
-  } else {
-    state.chatHistory.forEach(m => {
-      msgsHtml += `<div class="msg ${m.role==='user'?'user':'ai'}">${escHtml(m.content)}</div>`;
-    });
-    if (state.chatLoading) msgsHtml += `<div class="msg ai thinking">Thinking...</div>`;
-  }
-  body.innerHTML = `
-    <div class="chat-suggestions">${SUGGESTIONS.map(s=>`<span class="chat-sug" data-q="${escHtml(s)}">${s}</span>`).join('')}</div>
-    <div class="chat-msgs" id="chat-msgs">${msgsHtml}</div>
-    <div class="chat-input-row">
-      <textarea class="chat-input" id="chat-input" rows="1" placeholder="Ask anything about your procedure..."></textarea>
-      <button class="chat-send" id="chat-send" ${state.chatLoading?'disabled':''}>
-        <svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
-      </button>
-    </div>
-    <div class="chat-reset" id="chat-reset">Clear conversation · Change API key</div>`;
-  const msgs = document.getElementById('chat-msgs');
-  msgs.scrollTop = msgs.scrollHeight;
-  document.querySelectorAll('.chat-sug').forEach(s => {
-    s.addEventListener('click', () => sendMessage(s.dataset.q));
-  });
-  document.getElementById('chat-send').addEventListener('click', () => {
-    const val = document.getElementById('chat-input').value.trim();
-    if (val) sendMessage(val);
-  });
-  document.getElementById('chat-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); document.getElementById('chat-send').click(); }
-  });
-  document.getElementById('chat-reset').addEventListener('click', () => {
-    if (confirm('Clear conversation and/or reset API key?')) {
-      state.chatHistory = []; state.apiKey = ''; localStorage.removeItem('ji_api_key'); renderChat();
-    }
-  });
-}
-function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-}
-async function sendMessage(text) {
-  if (state.chatLoading || !text) return;
-  state.chatHistory.push({ role:'user', content:text });
-  state.chatLoading = true;
-  renderChat();
-  try {
-    const messages = state.chatHistory.map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.content }));
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': state.apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 600,
-        system: SYSTEM_PROMPT,
-        messages
-      })
-    });
-    const data = await res.json();
-    if (data.error) throw new Error(data.error.message);
-    const reply = data.content[0].text;
-    state.chatHistory.push({ role:'assistant', content:reply });
-  } catch(e) {
-    state.chatHistory.push({ role:'assistant', content:`Sorry, something went wrong: ${e.message}. Check your API key or try again.` });
-  }
-  state.chatLoading = false;
-  renderChat();
-}
-
-// ═══════════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════════
 function switchTab(tab) {
   state.tab = tab;
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.tab===tab));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id===`tab-${tab}`));
-  if (tab === 'info') renderChat();
 }
 document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
 document.querySelectorAll('#sess-toggle .tog-btn').forEach(btn => {
