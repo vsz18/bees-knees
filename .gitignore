@@ -1,0 +1,17 @@
+# Source images (large, not used in the web app)
+workouts/
+background.rtf
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temp files
+/tmp/

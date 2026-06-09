@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <title>Joint Intelligence</title>
+  <style>
+    :root {
+      --bg:#080808;--card:#141414;--card2:#1c1c1c;--border:#252525;--border2:#333;
+      --text:#fff;--text2:#aaa;--text3:#555;
+      --accent:#00d4ff;--accent-dim:rgba(0,212,255,.09);--accent-border:rgba(0,212,255,.28);
+      --warn:#ffc107;--warn-dim:rgba(255,193,7,.10);--warn-border:rgba(255,193,7,.30);
+      --safe:#00e676;--safe-dim:rgba(0,230,118,.09);--green:#4caf50;--red:#ff5252;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;overflow:hidden}
+    #app{height:100%;display:flex;flex-direction:column;max-width:480px;margin:0 auto}
+
+    /* TOP */
+    .top-bar{flex-shrink:0;padding:14px 20px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:var(--bg)}
+    .wordmark{font-size:17px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+    .wordmark em{color:var(--accent);font-style:normal}
+    .phase-pill{background:var(--accent-dim);border:1px solid var(--accent-border);color:var(--accent);font-size:10px;font-weight:800;letter-spacing:.12em;padding:4px 10px;border-radius:20px;text-transform:uppercase}
+
+    /* CONTENT */
+    .tab-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:80px}
+    .tab-content::-webkit-scrollbar{width:0}
+    .tab-panel{display:none;padding:20px}
+    .tab-panel.active{display:block}
+
+    /* BOTTOM NAV */
+    .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom,0)}
+    .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 0;background:none;border:none;color:var(--text3);font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:color .2s}
+    .nav-btn.active{color:var(--accent)}
+    .nav-btn svg{width:22px;height:22px}
+
+    /* SHARED */
+    .section-label{font-size:10px;font-weight:800;letter-spacing:.16em;color:var(--text3);text-transform:uppercase;margin:24px 0 10px}
+    .section-label:first-child{margin-top:0}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px}
+    .toggle-row{display:flex;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:3px;gap:3px;margin-bottom:14px}
+    .tog-btn{flex:1;padding:9px 6px;background:none;border:none;color:var(--text3);font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:6px;cursor:pointer;transition:all .2s}
+    .tog-btn.active{background:var(--accent);color:#000}
+
+    /* ── WEEK ── */
+    .week-title{font-size:28px;font-weight:900;line-height:1.1;margin-bottom:4px}
+    .week-title em{color:var(--accent);font-style:normal}
+    .week-sub{color:var(--text2);font-size:14px;margin-bottom:20px}
+    .day-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:16px}
+    .day-cell{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:10px;cursor:pointer;border:1px solid transparent;transition:all .2s;position:relative}
+    .day-cell:active{opacity:.7}
+    .day-cell.strength{background:rgba(0,212,255,.07);border-color:rgba(0,212,255,.2)}
+    .day-cell.walk{background:rgba(76,175,80,.07);border-color:rgba(76,175,80,.15)}
+    .day-cell.rest{background:var(--card);border-color:var(--border)}
+    .day-cell.sel{outline:2px solid var(--accent);outline-offset:1px}
+    .day-cell.today .day-abbr{color:var(--warn)}
+    .day-cell.today::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--warn)}
+    .day-abbr{font-size:10px;font-weight:800;letter-spacing:.08em;color:var(--text3);text-transform:uppercase}
+    .day-icon{font-size:18px;line-height:1}
+    .day-type{font-size:8px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+    .day-cell.strength .day-type{color:var(--accent)}
+    .day-cell.walk .day-type{color:var(--green)}
+    .day-cell.rest .day-type{color:var(--text3)}
+    .day-detail{border-radius:14px;padding:18px;margin-bottom:16px}
+    .day-detail.s-detail{background:rgba(0,212,255,.06);border:1px solid var(--accent-border)}
+    .day-detail.w-detail{background:rgba(76,175,80,.06);border:1px solid rgba(76,175,80,.2)}
+    .day-detail.r-detail{background:var(--card);border:1px solid var(--border)}
+    .dd-label{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+    .s-detail .dd-label{color:var(--accent)}.w-detail .dd-label{color:var(--green)}.r-detail .dd-label{color:var(--text3)}
+    .dd-title{font-size:20px;font-weight:900;text-transform:uppercase;line-height:1.1}
+    .dd-desc{font-size:13px;color:var(--text2);margin-top:8px;line-height:1.5}
+    .dd-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+    .dd-chip{font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px}
+    .dd-chip.blue{background:var(--accent-dim);border:1px solid var(--accent-border);color:var(--accent)}
+    .dd-chip.green{background:rgba(76,175,80,.1);border:1px solid rgba(76,175,80,.2);color:var(--green)}
+    .dd-chip.warn{background:var(--warn-dim);border:1px solid var(--warn-border);color:var(--warn)}
+    .view-btn{display:block;width:100%;margin-top:14px;padding:12px;background:var(--accent);color:#000;border:none;border-radius:10px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:opacity .2s}
+    .view-btn:active{opacity:.8}
+    .walk-tip{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(76,175,80,.08);align-items:flex-start}
+    .walk-tip:last-child{border-bottom:none}
+    .wt-icon{font-size:18px;flex-shrink:0}
+    .wt-label{font-size:13px;font-weight:700}
+    .wt-desc{font-size:12px;color:var(--text2);margin-top:2px;line-height:1.4}
+
+    /* ── WORKOUT ── */
+    .sess-row{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+    .sess-row::-webkit-scrollbar{display:none}
+    .sess-pill{flex-shrink:0;padding:8px 16px;background:var(--card2);border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);cursor:pointer;transition:all .2s;white-space:nowrap}
+    .sess-pill.active{background:var(--accent);color:#000;border-color:var(--accent)}
+    .sh-eye{font-size:10px;font-weight:800;letter-spacing:.14em;color:var(--text3);text-transform:uppercase;margin-bottom:6px}
+    .sh-title{font-size:26px;font-weight:900;text-transform:uppercase;letter-spacing:.02em;line-height:1}
+    .sh-meta{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap;margin-bottom:16px}
+    .sh-tag{font-size:10px;font-weight:800;letter-spacing:.08em;padding:4px 10px;border-radius:20px;text-transform:uppercase}
+    .sh-tag.mods{background:var(--warn-dim);border:1px solid var(--warn-border);color:var(--warn)}
+    .sh-tag.ok{background:var(--safe-dim);border:1px solid rgba(0,230,118,.2);color:var(--safe)}
+    .block-card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
+    .block-head{background:var(--card2);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+    .block-name{font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+    .block-fmt{font-size:11px;color:var(--text3);font-weight:600;max-width:55%;text-align:right}
+    .ex-row{padding:11px 14px;display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .15s}
+    .ex-row:last-child{border-bottom:none}
+    .ex-row:active{background:rgba(255,255,255,.02)}
+    .ex-dot{width:7px;height:7px;border-radius:50%;margin-top:6px;flex-shrink:0}
+    .ex-dot.safe{background:var(--safe)}.ex-dot.modify{background:var(--warn)}.ex-dot.note{background:var(--text3)}
+    .ex-body{flex:1;min-width:0}
+    .ex-name{font-size:14px;font-weight:600;line-height:1.3}
+    .ex-reps{font-size:11px;color:var(--text3);margin-top:2px;font-weight:600}
+    .ex-hint{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-top:3px;color:var(--text3)}
+    .ex-hint.warn{color:var(--warn)}
+    .ex-expand{display:none;padding:12px 14px 14px;border-top:1px solid rgba(255,255,255,.04)}
+    .ex-expand.open{display:block}
+    .ex-howto{font-size:13px;color:var(--text2);line-height:1.55;margin-bottom:10px}
+    .ex-mod-block{background:var(--warn-dim);border-left:3px solid var(--warn);padding:10px 12px;border-radius:0 8px 8px 0;font-size:13px;color:#ffe082;line-height:1.5;margin-top:8px}
+    .ex-note-block{background:rgba(255,255,255,.03);border-left:3px solid var(--border2);padding:10px 12px;border-radius:0 8px 8px 0;font-size:13px;color:var(--text2);line-height:1.5;margin-top:8px}
+    .ex-howto-label{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
+    .ex-mod-label-hd{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--warn);margin-bottom:4px}
+
+    /* Prehab */
+    .prehab-card{background:rgba(0,212,255,.04);border:1px solid var(--accent-border);border-radius:12px;margin-bottom:10px;overflow:hidden}
+    .prehab-head{background:rgba(0,212,255,.08);padding:10px 14px;border-bottom:1px solid rgba(0,212,255,.14)}
+    .prehab-name{font-size:11px;font-weight:900;letter-spacing:.14em;color:var(--accent);text-transform:uppercase}
+    .prehab-fmt{font-size:11px;color:rgba(0,212,255,.5);margin-top:2px}
+    .prehab-note{margin:10px 14px 4px;padding:8px 12px;background:rgba(0,212,255,.06);border-radius:8px;font-size:12px;color:var(--accent);font-style:italic}
+    .prehab-ex{padding:10px 14px;border-bottom:1px solid rgba(0,212,255,.07);cursor:pointer}
+    .prehab-ex:last-child{border-bottom:none}
+    .prehab-ex-name{font-size:14px;font-weight:600}
+    .prehab-ex-detail{font-size:11px;color:var(--text3);margin-top:1px}
+    .prehab-ex-reps{font-size:12px;color:var(--accent);margin-top:3px;font-weight:700}
+    .prehab-ex-body{display:none;padding:8px 0 4px}
+    .prehab-ex-body.open{display:block}
+    .prehab-ex-cue{font-size:12px;color:var(--text2);font-style:italic;line-height:1.4}
+
+    /* ── NUTRITION ── */
+    .ni-intro{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:20px}
+    .ni-title{font-size:16px;font-weight:800}
+    .ni-sub{font-size:13px;color:var(--text2);margin-top:6px;line-height:1.5}
+    .ni-source{font-size:11px;color:var(--text3);margin-top:10px;font-style:italic}
+    .food-cat{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
+    .fc-head{padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .15s}
+    .fc-head:active{background:rgba(255,255,255,.02)}
+    .fc-icon{font-size:24px;flex-shrink:0}
+    .fc-main{flex:1}
+    .fc-name{font-size:15px;font-weight:700}
+    .fc-tag{font-size:12px;color:var(--text2);margin-top:2px}
+    .fc-arrow{color:var(--text3);font-size:18px;transition:transform .2s;flex-shrink:0}
+    .fc-arrow.open{transform:rotate(90deg)}
+    .fc-body{padding:0 16px 14px;border-top:1px solid var(--border);display:none}
+    .fc-body.open{display:block}
+    .fc-why{font-size:13px;color:var(--text2);line-height:1.55;margin-top:12px}
+    .fc-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+    .fc-chip{padding:6px 13px;border-radius:20px;font-size:13px;background:rgba(255,255,255,.05);border:1px solid var(--border2);color:var(--text)}
+    .fc-avoid-lbl{font-size:10px;font-weight:800;letter-spacing:.12em;color:var(--red);text-transform:uppercase;margin:10px 0 6px}
+    .fc-bad{padding:6px 13px;border-radius:20px;font-size:13px;background:rgba(255,82,82,.07);border:1px solid rgba(255,82,82,.18);color:var(--red)}
+
+    /* ── INFO / RESEARCH ── */
+    .info-title{font-size:28px;font-weight:900;line-height:1.1;margin-bottom:4px}
+    .info-title em{color:var(--accent);font-style:normal}
+    .info-sub{font-size:14px;color:var(--text2);margin-bottom:20px}
+    .research-card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
+    .rc-head{background:var(--card2);padding:12px 16px;border-bottom:1px solid var(--border)}
+    .rc-title{font-size:12px;font-weight:900;letter-spacing:.12em;color:var(--accent);text-transform:uppercase}
+    .rc-body{padding:14px 16px}
+    .rc-text{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:8px}
+    .rc-text:last-child{margin-bottom:0}
+    .rc-bullet{display:flex;gap:8px;margin-bottom:7px}
+    .rc-bullet:last-child{margin-bottom:0}
+    .rc-dot{color:var(--accent);font-weight:900;flex-shrink:0;margin-top:1px}
+    .rc-bullet-text{font-size:13px;color:var(--text2);line-height:1.45}
+    .stat-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+    .stat-box{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center}
+    .stat-n{font-size:22px;font-weight:900;color:var(--accent);line-height:1}
+    .stat-l{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:4px;font-weight:700}
+
+    /* AI CHAT */
+    .chat-box{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:10px}
+    .chat-head{background:var(--card2);padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+    .chat-head-icon{font-size:20px}
+    .chat-head-title{font-size:14px;font-weight:800}
+    .chat-head-sub{font-size:12px;color:var(--text2);margin-top:1px}
+    .chat-key-setup{padding:16px;display:flex;flex-direction:column;gap:10px}
+    .chat-key-label{font-size:13px;color:var(--text2);line-height:1.5}
+    .chat-key-row{display:flex;gap:8px}
+    .chat-key-input{flex:1;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;font-family:inherit;outline:none}
+    .chat-key-input:focus{border-color:var(--accent-border)}
+    .chat-key-btn{padding:10px 16px;background:var(--accent);color:#000;border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap}
+    .chat-key-note{font-size:11px;color:var(--text3);font-style:italic}
+    .chat-suggestions{padding:10px 14px 0;display:flex;flex-wrap:wrap;gap:6px}
+    .chat-sug{padding:6px 12px;background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:16px;font-size:12px;color:var(--accent);cursor:pointer;font-weight:600;transition:background .15s}
+    .chat-sug:active{background:rgba(0,212,255,.2)}
+    .chat-msgs{padding:14px;max-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+    .chat-msgs::-webkit-scrollbar{width:0}
+    .msg{max-width:88%;padding:10px 13px;border-radius:12px;font-size:13px;line-height:1.55}
+    .msg.user{background:var(--accent);color:#000;align-self:flex-end;border-radius:12px 12px 3px 12px;font-weight:600}
+    .msg.ai{background:var(--card2);color:var(--text);align-self:flex-start;border-radius:12px 12px 12px 3px;border:1px solid var(--border2)}
+    .msg.thinking{color:var(--text3);font-style:italic}
+    .chat-input-row{padding:10px 14px 14px;display:flex;gap:8px;border-top:1px solid var(--border)}
+    .chat-input{flex:1;background:var(--card2);border:1px solid var(--border2);border-radius:20px;padding:10px 14px;color:var(--text);font-size:14px;font-family:inherit;outline:none;resize:none;max-height:80px}
+    .chat-input:focus{border-color:var(--accent-border)}
+    .chat-send{width:38px;height:38px;background:var(--accent);border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .2s;align-self:flex-end}
+    .chat-send:active{opacity:.8}
+    .chat-send:disabled{opacity:.4;cursor:default}
+    .chat-send svg{width:16px;height:16px;fill:#000}
+    .chat-reset{font-size:11px;color:var(--text3);text-align:center;padding:0 14px 10px;cursor:pointer;text-decoration:underline}
+
+    /* RULES / TIMELINE */
+    .proc-card{background:linear-gradient(135deg,rgba(255,193,7,.06),rgba(0,0,0,0));border:1px solid rgba(255,193,7,.22);border-radius:12px;padding:16px;margin-bottom:10px}
+    .proc-lbl{font-size:10px;font-weight:800;letter-spacing:.14em;color:var(--warn);text-transform:uppercase;margin-bottom:8px}
+    .proc-title{font-size:17px;font-weight:900;text-transform:uppercase}
+    .proc-desc{font-size:13px;color:var(--text2);margin-top:8px;line-height:1.5}
+    .rules-card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
+    .rules-hd{background:var(--card2);padding:10px 14px}
+    .rule-row{padding:10px 14px;display:flex;gap:10px;border-bottom:1px solid rgba(255,255,255,.04)}
+    .rule-row:last-child{border-bottom:none}
+    .rule-icon{font-size:16px;flex-shrink:0}
+    .rule-text{font-size:13px;color:var(--text2);line-height:1.4}
+    .tl-item{display:flex;gap:14px}
+    .tl-line{display:flex;flex-direction:column;align-items:center}
+    .tl-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;margin-top:3px}
+    .tl-dot.now{background:var(--accent);box-shadow:0 0 0 3px rgba(0,212,255,.18)}
+    .tl-dot.fut{background:var(--border2)}
+    .tl-bar{width:2px;flex:1;background:var(--border);margin-top:3px;min-height:28px}
+    .tl-content{flex:1;padding-bottom:14px}
+    .tl-phase{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+    .tl-phase.now{color:var(--accent)}.tl-phase.fut{color:var(--text3)}
+    .tl-title{font-size:15px;font-weight:700;margin-top:2px}
+    .tl-desc{font-size:13px;color:var(--text2);margin-top:4px;line-height:1.45}
+  </style>
+</head>
+<body>
+<div id="app">
+  <div class="top-bar">
+    <div class="wordmark">Joint <em>Intelligence</em></div>
+    <div class="phase-pill">Prehab</div>
+  </div>
+  <div class="tab-content">
+
+    <!-- ══════════ WEEK ══════════ -->
+    <div id="tab-week" class="tab-panel active">
+      <div class="week-title">Your <em>Week</em></div>
+      <div class="week-sub" id="week-sub">Loading...</div>
+      <div class="toggle-row" id="sess-toggle">
+        <button class="tog-btn active" data-n="2">2 Sessions</button>
+        <button class="tog-btn" data-n="3">3 Sessions</button>
+      </div>
+      <div class="day-strip" id="day-strip"></div>
+      <div id="day-detail"></div>
+    </div>
+
+    <!-- ══════════ WORKOUT ══════════ -->
+    <div id="tab-workout" class="tab-panel">
+      <div class="sess-row" id="sess-pills"></div>
+      <div id="workout-content"></div>
+    </div>
+
+    <!-- ══════════ NUTRITION ══════════ -->
+    <div id="tab-nutrition" class="tab-panel">
+      <div class="ni-intro">
+        <div class="ni-title">Food as Medicine</div>
+        <div class="ni-sub">These are suggestions to support joint healing — not a strict protocol. Small, consistent changes add up. Pick one or two areas to focus on.</div>
+        <div class="ni-source">Based on guidance from Dr. Paul Jacob, orthopedic surgeon</div>
+      </div>
+      <div class="section-label">5 Areas to Focus On</div>
+      <div class="food-cat" id="fc-protein">
+        <div class="fc-head"><div class="fc-icon">🥚</div><div class="fc-main"><div class="fc-name">High-Quality Protein</div><div class="fc-tag">The raw material for rebuilding</div></div><div class="fc-arrow">›</div></div>
+        <div class="fc-body">
+          <div class="fc-why">Protein gives your body the building blocks for tissue repair and keeps your immune system strong before and after surgery. Aim for it at every meal.</div>
+          <div class="fc-chips"><span class="fc-chip">Eggs</span><span class="fc-chip">Chicken</span><span class="fc-chip">Salmon</span><span class="fc-chip">Lean beef</span><span class="fc-chip">Greek yogurt</span><span class="fc-chip">Almonds</span><span class="fc-chip">Lentils</span><span class="fc-chip">Cottage cheese</span></div>
+        </div>
+      </div>
+      <div class="food-cat" id="fc-carbs">
+        <div class="fc-head"><div class="fc-icon">🍠</div><div class="fc-main"><div class="fc-name">Complex Carbohydrates</div><div class="fc-tag">Fuel from whole foods, not sugar</div></div><div class="fc-arrow">›</div></div>
+        <div class="fc-body">
+          <div class="fc-why">Surgery raises your body's metabolic demands. Whole grains, starchy vegetables, and legumes provide steady energy without the inflammation spike from refined sugar.</div>
+          <div class="fc-chips"><span class="fc-chip">Sweet potato</span><span class="fc-chip">Oats</span><span class="fc-chip">Brown rice</span><span class="fc-chip">Quinoa</span><span class="fc-chip">Chickpeas</span><span class="fc-chip">Lentils</span><span class="fc-chip">Beans</span></div>
+          <div class="fc-avoid-lbl">Limit these</div>
+          <div class="fc-chips"><span class="fc-bad">Pastries</span><span class="fc-bad">Candy</span><span class="fc-bad">Soda</span><span class="fc-bad">Cookies</span><span class="fc-bad">Ice cream</span></div>
+        </div>
+      </div>
+      <div class="food-cat" id="fc-fats">
+        <div class="fc-head"><div class="fc-icon">🐟</div><div class="fc-main"><div class="fc-name">Anti-Inflammatory Fats</div><div class="fc-tag">Omega-3s calm the joint down</div></div><div class="fc-arrow">›</div></div>
+        <div class="fc-body">
+          <div class="fc-why">Omega-3 fatty acids directly reduce post-surgical inflammation. Fatty fish 2–3 times a week is the simplest way to get them — especially relevant given the bone marrow edema in your knee.</div>
+          <div class="fc-chips"><span class="fc-chip">Salmon</span><span class="fc-chip">Mackerel</span><span class="fc-chip">Sardines</span><span class="fc-chip">Anchovies</span><span class="fc-chip">Walnuts</span><span class="fc-chip">Olive oil</span><span class="fc-chip">Avocado</span></div>
+        </div>
+      </div>
+      <div class="food-cat" id="fc-calcium">
+        <div class="fc-head"><div class="fc-icon">🥬</div><div class="fc-main"><div class="fc-name">Calcium + Vitamin D</div><div class="fc-tag">For bone and joint health</div></div><div class="fc-arrow">›</div></div>
+        <div class="fc-body">
+          <div class="fc-why">Calcium builds bone; Vitamin D is what allows the body to absorb it. Critical for BML healing. Get 15–20 minutes of sunlight daily — pair it with your walk days for a free boost.</div>
+          <div class="fc-chips"><span class="fc-chip">Spinach</span><span class="fc-chip">Kale</span><span class="fc-chip">Chia seeds</span><span class="fc-chip">Milk / yogurt</span><span class="fc-chip">Cheese</span><span class="fc-chip">Broccoli</span><span class="fc-chip">Almonds</span></div>
+          <div style="margin-top:10px;font-size:13px;color:var(--text2)">☀️ <strong>Sunlight tip:</strong> 15–20 minutes outdoors daily supports natural Vitamin D synthesis. Your walk is a perfect opportunity.</div>
+        </div>
+      </div>
+      <div class="food-cat" id="fc-vitc">
+        <div class="fc-head"><div class="fc-icon">🍊</div><div class="fc-main"><div class="fc-name">Vitamin C</div><div class="fc-tag">Essential for collagen formation</div></div><div class="fc-arrow">›</div></div>
+        <div class="fc-body">
+          <div class="fc-why">Vitamin C is required to synthesize collagen — the protein that makes up cartilage, ligaments, and tendons. Since you have full-thickness cartilage loss, this nutrient is directly relevant to healing.</div>
+          <div class="fc-chips"><span class="fc-chip">Oranges</span><span class="fc-chip">Kiwi</span><span class="fc-chip">Grapefruit</span><span class="fc-chip">Lemons</span><span class="fc-chip">Bell pepper</span><span class="fc-chip">Cauliflower</span><span class="fc-chip">Brussels sprouts</span><span class="fc-chip">Strawberries</span></div>
+        </div>
+      </div>
+      <div style="height:10px"></div>
+    </div>
+
+    <!-- ══════════ INFO ══════════ -->
+    <div id="tab-info" class="tab-panel">
+      <div class="info-title">About Your <em>Procedure</em></div>
+      <div class="info-sub">Research on BMAC + Intraosseous Bioplasty, and what to expect.</div>
+
+      <div class="section-label">What Is BMAC?</div>
+      <div class="research-card">
+        <div class="rc-head"><div class="rc-title">Bone Marrow Aspirate Concentrate</div></div>
+        <div class="rc-body">
+          <div class="rc-text">BMAC is harvested from your own hip bone (iliac crest) using a needle under local anesthesia — no donor tissue involved. The aspirate is then spun in a centrifuge to concentrate the healing agents 6–8× above baseline.</div>
+          <div class="rc-text">What's in the concentrate:</div>
+          <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text"><strong>Mesenchymal stem cells (MSCs)</strong> — can differentiate into cartilage cells (chondrocytes) and bone cells (osteoblasts)</div></div>
+          <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text"><strong>Growth factors</strong> — TGF-β, BMP-2, PDGF, IGF-1, and VEGF stimulate tissue repair and reduce local inflammation</div></div>
+          <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text"><strong>Platelets</strong> — release healing signals and initiate the repair cascade at the defect site</div></div>
+          <div class="stat-strip">
+            <div class="stat-box"><div class="stat-n">6–8×</div><div class="stat-l">Concentration</div></div>
+            <div class="stat-box"><div class="stat-n">~70%</div><div class="stat-l">Report improvement at 2 yrs</div></div>
+            <div class="stat-box"><div class="stat-n">1 day</div><div class="stat-l">Outpatient</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">The Intraosseous Component</div>
+      <div class="research-card">
+        <div class="rc-head"><div class="rc-title">Bioplasty — Targeting the Bone</div></div>
+        <div class="rc-body">
+          <div class="rc-text">Standard joint injections deliver BMAC into the joint space. Intraosseous bioplasty goes deeper — the BMAC is injected directly into the subchondral bone, exactly where the bone marrow edema lesion (BML) lives.</div>
+          <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text">Small targeted perforations are made in the bone to release BML pressure and create channels for the BMAC to integrate</div></div>
+          <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text">The BML is considered the primary pain driver — this approach addresses it directly rather than just the cartilage surface</div></div>
+          <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text">The combined approach (intra-articular + intraosseous) targets both the Grade IV cartilage defect and the underlying bone pathology simultaneously</div></div>
+        </div>
+      </div>
+
+      <div class="section-label">What to Expect</div>
+      <div class="research-card">
+        <div class="rc-head"><div class="rc-title">Timeline &amp; Recovery</div></div>
+        <div class="rc-body">
+          <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text"><strong>Procedure day:</strong> 1–2 hours, outpatient. Go home same day.</div></div>
+          <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text"><strong>Weeks 1–2:</strong> Pain may temporarily increase — this is a normal inflammatory healing response.</div></div>
+          <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text"><strong>Weeks 4–8:</strong> Protected weight-bearing. Isometrics, pool, gentle range-of-motion work.</div></div>
+          <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text"><strong>Weeks 6–12:</strong> First signs of improvement typically emerge. Gradual return to gym loading.</div></div>
+          <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text"><strong>6–12 months:</strong> Full effect of the BMAC. Return-to-run protocol begins if healing is confirmed.</div></div>
+        </div>
+      </div>
+
+      <div class="research-card" style="margin-bottom:20px">
+        <div class="rc-head"><div class="rc-title">Why Prehab Matters</div></div>
+        <div class="rc-body">
+          <div class="rc-text">Studies consistently show that pre-operative quadriceps strength is the single strongest predictor of post-operative recovery speed. Every session you complete now directly accelerates the timeline after the procedure.</div>
+          <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text">Stronger quads = better mechanical protection for the joint surface during loading</div></div>
+          <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text">Better cardiovascular fitness going in → faster healing metabolism post-procedure</div></div>
+          <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text">Hip strength reduces patellofemoral contact forces by up to 30% during daily movement</div></div>
+        </div>
+      </div>
+
+      <div class="section-label">Ask Anything</div>
+      <div class="chat-box" id="chat-box">
+        <div class="chat-head">
+          <div class="chat-head-icon">🧠</div>
+          <div>
+            <div class="chat-head-title">AI Research Assistant</div>
+            <div class="chat-head-sub">Ask about your procedure, recovery, or prehab</div>
+          </div>
+        </div>
+        <div id="chat-body"></div>
+      </div>
+
+      <div class="section-label">Recovery Roadmap</div>
+      <div class="tl-item"><div class="tl-line"><div class="tl-dot now"></div><div class="tl-bar"></div></div><div class="tl-content"><div class="tl-phase now">Now — Prehab</div><div class="tl-title">Build Your Foundation</div><div class="tl-desc">Strengthen quads, glutes, and hips. Every unit of strength you build now directly accelerates post-op recovery.</div></div></div>
+      <div class="tl-item"><div class="tl-line"><div class="tl-dot fut"></div><div class="tl-bar"></div></div><div class="tl-content"><div class="tl-phase fut">Next — Procedure</div><div class="tl-title">BMAC + Bioplasty</div><div class="tl-desc">Outpatient, 1–2 hours. Expect 4–8 weeks of protected weight-bearing post-op.</div></div></div>
+      <div class="tl-item"><div class="tl-line"><div class="tl-dot fut"></div><div class="tl-bar"></div></div><div class="tl-content"><div class="tl-phase fut">Post-Op Phases 1–2</div><div class="tl-title">Protect, Then Load</div><div class="tl-desc">Weeks 0–6: isometrics, pool, gentle ROM. Weeks 6–16: progressive gym loading.</div></div></div>
+      <div class="tl-item" style="margin-bottom:16px"><div class="tl-line"><div class="tl-dot fut"></div></div><div class="tl-content"><div class="tl-phase fut">Goal</div><div class="tl-title">Return to Running</div><div class="tl-desc">4–12 months post-procedure with a walk/run return-to-run protocol.</div></div></div>
+
+      <div class="section-label">Movement Rules</div>
+      <div class="rules-card"><div class="rules-hd" style="background:var(--card2)"><span style="font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--red)">🚫 Always Avoid</span></div>
+        <div class="rule-row"><div class="rule-icon">🦘</div><div class="rule-text">All jumping and impact — box jumps, jump squats, running, plyometrics</div></div>
+        <div class="rule-row"><div class="rule-icon">🦵</div><div class="rule-text">Deep knee flexion past 60–70° under load (deep squats, full lunges, cyclist squat)</div></div>
+        <div class="rule-row"><div class="rule-icon">🌀</div><div class="rule-text">Twisting under load</div></div>
+        <div class="rule-row"><div class="rule-icon">🔴</div><div class="rule-text">Anything causing knee pain above 3/10 — modify or stop</div></div>
+      </div>
+      <div class="rules-card" style="margin-bottom:20px"><div class="rules-hd" style="background:var(--card2)"><span style="font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--safe)">✅ Always OK</span></div>
+        <div class="rule-row"><div class="rule-icon">🏋️</div><div class="rule-text">Hip-dominant work: Romanian deadlifts, hip thrusts, deadlifts, glute bridges</div></div>
+        <div class="rule-row"><div class="rule-icon">💪</div><div class="rule-text">All upper body training as programmed</div></div>
+        <div class="rule-row"><div class="rule-icon">🚴</div><div class="rule-text">Bike, row erg, ski erg at low–moderate effort</div></div>
+        <div class="rule-row"><div class="rule-icon">🚶</div><div class="rule-text">Walking on flat terrain — daily, comfortable pace</div></div>
+      </div>
+    </div>
+
+  </div><!-- end tab-content -->
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-tab="week">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Week
+    </button>
+    <button class="nav-btn" data-tab="workout">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="12" x2="22" y2="12"/><rect x="6" y="9.5" width="12" height="5" rx="1.5"/><line x1="6" y1="8" x2="6" y2="10"/><line x1="18" y1="8" x2="18" y2="10"/><line x1="6" y1="14" x2="6" y2="16"/><line x1="18" y1="14" x2="18" y2="16"/></svg>
+      Workout
+    </button>
+    <button class="nav-btn" data-tab="nutrition">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 3"/><circle cx="18" cy="5" r="3"/></svg>
+      Nutrition
+    </button>
+    <button class="nav-btn" data-tab="info">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Research
+    </button>
+  </nav>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════
+
+const PREHAB = {
+  name: 'PREHAB ADD-ON',
+  fmt: '3 ROUNDS — DO EVERY SESSION',
+  note: 'The most important 15 minutes for your knee. VMO activation and hip stability directly protect the patella under load.',
+  exercises: [
+    { name: 'Terminal Knee Extension', detail: 'Resistance band looped around knee, standing', reps: '3 × 15 each side',
+      cue: 'Start with a slight bend in the knee. Straighten fully against the band, hold 1 second at full extension. Slow 3-second return. You should feel the inner quad (VMO) above the kneecap fire.' },
+    { name: 'VMO Isometric Quad Set', detail: 'Lying on your back, small rolled towel under one knee', reps: '3 × 30 seconds',
+      cue: 'Press your knee down into the towel. No movement — pure muscle tension. The goal is to feel the teardrop-shaped VMO muscle just above and inside the kneecap switch on.' },
+    { name: 'Side-Lying Hip Abduction', detail: 'Lying on your side, mini band above knees', reps: '3 × 15 each side',
+      cue: 'Lift the top leg slowly without letting your hip roll backward. Feel the outer glute working, not your hip flexor or lower back. Slow and controlled throughout.' },
+    { name: 'Single-Leg Calf Raise', detail: 'Standing on a step edge, one foot at a time', reps: '3 × 12 each side',
+      cue: '3 seconds up to full tippy-toe, 3 seconds back down below neutral. Full range. Stop if you feel a deep aching pain in the bone just below the kneecap — that is the BML responding.' },
+    { name: 'Dead Bug', detail: 'Lying on your back, both arms straight up to the ceiling', reps: '3 × 8 each side',
+      cue: 'Press your entire lower back into the floor and keep it there. Lower one arm overhead while simultaneously lowering the opposite leg. Return and switch. If your back lifts off the floor, the range is too big.' }
+  ]
+};
+
+const SESSIONS = [
+  {
+    id: 0, label: 'UPPER', title: 'SQUAD — UPPER', date: 'JUNE 9/10',
+    blocks: [
+      { name: 'BLOCK A', fmt: 'Every 2:30 × 4 sets',
+        exercises: [
+          { name: 'Dual Kettlebell Bridged Floor Press', reps: '8', type: 'safe',
+            howTo: 'Lie on your back with knees bent and feet flat. Lift your hips into a glute bridge. Hold a kettlebell in each hand at your chest. Press both overhead to full arm extension, then lower with control. Keep the glute squeeze throughout — this is a full-body tension exercise, not just a chest press.' },
+          { name: 'Single-Arm Dumbbell Incline Row', reps: '6.6', type: 'safe',
+            howTo: 'Prop a bench at roughly 45 degrees. Lie chest-down on the incline, one arm dangling with a dumbbell. Row it toward your hip, keeping your elbow close to your body. Squeeze your shoulder blade hard at the top, lower with full control. Keeps your torso stable so it is pure lat and upper back.' }
+        ]
+      },
+      { name: 'BLOCK B', fmt: 'As Many Rounds As Possible',
+        exercises: [
+          { name: 'Tempo Push-Up (3 seconds down, 3 hold, 1 up)', reps: '8', type: 'safe',
+            howTo: 'Start in a high plank with hands just wider than shoulder width. Lower your chest to the floor over 3 full seconds, pause at the bottom for 3 seconds, then press back up in 1 second. Start on your knees if needed — the slow tempo is the entire point, not the load.' },
+          { name: 'Hammer Curl', reps: '10', type: 'safe',
+            howTo: 'Stand holding a dumbbell in each hand with palms facing inward (thumbs up, like holding a hammer). Curl both arms up to shoulder height, keeping palms facing each other the entire time. Lower slowly over 2–3 seconds. The neutral grip loads the brachialis and forearm more than a standard curl.' },
+          { name: 'Supine Dumbbell Toe Touches', reps: '15', type: 'safe',
+            howTo: 'Lie on your back and raise both legs straight up toward the ceiling. Hold one dumbbell in both hands with arms extended. Crunch upward, reaching the dumbbell toward your feet. Control the return — do not let your shoulder blades crash back down. Your legs stay vertical throughout.' }
+        ]
+      },
+      { name: 'BLOCK C', fmt: '3–4 rounds, rest 30–40 seconds',
+        exercises: [
+          { name: 'Barbell Strict Press', reps: '5', type: 'safe',
+            howTo: 'Hold a barbell at shoulder height with a slightly wider than shoulder-width grip, elbows just in front of the bar. Press it directly overhead to full lockout. No leg drive whatsoever — this is a pure shoulder and tricep press. Lower under control back to shoulder height.' },
+          { name: 'Alternating Kettlebell Gorilla Row', reps: '10', type: 'safe',
+            howTo: 'Stand over two kettlebells placed between your feet. Hinge at the hips with a flat back. Row one kettlebell to your hip while the other stays on the floor as a counterbalance. Set it down, row the other side. The alternating rhythm challenges core anti-rotation.' },
+          { name: 'Kettlebell Hip Circles', reps: '8.8', type: 'safe',
+            howTo: 'Stand with feet hip-width apart, holding a kettlebell at your hips or chest for counterbalance. Draw slow, deliberate circles with your hips — clockwise for your reps, then counterclockwise. Move from the hip joint, not the knee. This is a hip mobility drill with a light load.' }
+        ]
+      },
+      { name: 'CONDITIONING', fmt: 'As Many Rounds As Possible — 1:1 work:rest with partner',
+        exercises: [
+          { name: 'Burpee', reps: '30 total', type: 'modify',
+            howTo: 'Stand tall. Step one foot back to a plank, then the other. Optional push-up. Step one foot back forward, then the other, and stand. No jumping at any point.',
+            mod: 'The standard burpee involves jumping your feet in and jumping to stand — skip both jumps. Step back, step forward, step up. Same conditioning demand, zero patellofemoral impact.' },
+          { name: 'Ski Erg or Assault Bike Calories', reps: '40 cals', type: 'safe',
+            howTo: 'Ski erg: grip the handles overhead, pull them down in a sweeping arc to your hips by hinging slightly and driving with your lats. Bike: maintain a consistent cadence, use resistance to control effort. Both are excellent low-impact cardiovascular options for your knee.' },
+          { name: 'Alternating Dumbbell Snatch', reps: '40 total', type: 'safe',
+            howTo: 'One dumbbell on the floor between your feet. Hinge down to grip it. In one explosive movement, drive your hips forward and pull the dumbbell overhead in a single arc, punching it up at the top with arm locked out. Control the return to the floor and switch hands. The power comes from the hips, not the arm.' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 1, label: 'LOWER', title: 'SQUAD — LOWER', date: 'JUNE 11/12',
+    blocks: [
+      { name: 'BLOCK A', fmt: 'Every 2:30 × 4 sets',
+        exercises: [
+          { name: 'Goblet Lateral Squat (3-second lowering)', reps: '6.6 each side', type: 'modify',
+            howTo: 'Hold a kettlebell at your chest. Take a wide stance. Shift your weight to one side and bend that knee while keeping the other leg straight. Take 3 seconds on the way down. Push through the working heel to return.',
+            mod: 'Limit the working knee to approximately 60° of bend — about halfway to parallel. Avoid the full depth shown in class. Keep the loaded knee tracking over your second toe at all times. If you feel clicking, grinding, or catching: substitute Standing Hip Abduction with a band × 15 reps each side.' },
+          { name: 'Box Step-Up', reps: '3–5 each side', type: 'modify',
+            howTo: 'Stand in front of a sturdy box. Step up with one foot, press through that heel to bring the other foot up to the box. Step back down one foot at a time.',
+            mod: 'This replaces the Box Jump entirely. The step-down is the important part — take 3 full seconds on the descent. This slow eccentric builds exactly the quad control needed for your recovery. No jumping, no landing.' }
+        ]
+      },
+      { name: 'BLOCK B', fmt: 'As Many Rounds As Possible',
+        exercises: [
+          { name: 'Single-Leg Romanian Deadlift to Knee Drive', reps: '5.5 each side', type: 'safe',
+            howTo: 'Stand on one leg. Hinge at the hip, reaching your opposite hand toward the floor while the non-standing leg extends behind you. Return to standing, then immediately drive the back knee forward to hip height. That is one rep. The standing knee stays soft (never locked) throughout.' },
+          { name: 'Dumbbell Frog Pump', reps: '20', type: 'safe',
+            howTo: 'Lie on your back and place a dumbbell across your hips (hold it in place with both hands). Bring the soles of your feet together in a diamond/frog shape. Drive your hips up toward the ceiling, squeezing your glutes as hard as possible at the top. Lower with control. This position pre-stretches the glutes for a stronger contraction.' },
+          { name: 'Weighted Calf Raise on Plate', reps: '12', type: 'note',
+            howTo: 'Stand with the balls of your feet on the edge of a weight plate, heels hanging off. Hold a dumbbell or place a bar on your shoulders for load. Rise up fully onto your toes, then lower your heels below the plate level for a full stretch. 3 seconds up, 3 seconds down.',
+            note: 'Generally safe. Monitor for a deep, aching pain in the bone just below the kneecap — that is the BML site responding to the loading. Pain under 3/10 is acceptable. At 3/10 or above, do flat-floor calf raises instead.' }
+        ]
+      },
+      { name: 'BLOCK C', fmt: '3–4 rounds',
+        exercises: [
+          { name: 'Barbell Reverse Lunge (flat floor)', reps: '5.5 each side', type: 'modify',
+            howTo: 'Hold a barbell on your back or dumbbells at your sides. Step backward with one foot, lowering your back knee toward the floor. Push through your front heel to return to standing.',
+            mod: 'Do not use a deficit plate — flat floor only. Take a full 3 seconds on the descent. Keep your front shin as vertical as possible by stepping back far enough. The front knee should bend to about 80° max — not beyond that.' },
+          { name: 'Dumbbell Romanian Deadlift (3-second lowering)', reps: '5', type: 'safe',
+            howTo: 'Stand holding dumbbells in front of your thighs. Hinge at the hips, pushing them backward, and lower the weights along your shins with a flat back. Take 3 full seconds on the way down. Feel the hamstring stretch at the bottom. Drive your hips forward to return to standing. Soft knee bend throughout — this is a hip hinge, not a squat.' },
+          { name: 'Single-Arm Kettlebell Suitcase March', reps: '12.12', type: 'safe',
+            howTo: 'Hold a heavy kettlebell in one hand at your side, like a suitcase. March in place bringing your knees to hip height. Resist the urge to lean toward the weight — stay completely upright. The challenge is core and hip stability, not just carrying the load. Switch hands for the second set of 12.' }
+        ]
+      },
+      { name: 'CONDITIONING', fmt: 'Sprint — Every Minute On the Minute × 9',
+        exercises: [
+          { name: 'Minute 1: Assault Bike', reps: '10 calories', type: 'safe',
+            howTo: 'Push through a full sprint for the entire minute. The bike is excellent for your condition — knees stay in a safe flexion range throughout, and the upper body drive adds to the intensity without extra joint load.' },
+          { name: 'Minute 2: Rowing Machine', reps: '10–15 calories', type: 'safe',
+            howTo: 'Drive sequence: legs push first, then torso leans back slightly, then arms pull the handle to your lower ribs. Return: arms extend, lean forward, legs bend. Smooth, connected rhythm. The rowing motion keeps your knee in a safe range of motion.' },
+          { name: 'Minute 3: Air Squat', reps: '20', type: 'modify',
+            howTo: 'Feet shoulder-width apart, toes turned out about 30 degrees. Lower down, arms reaching forward for balance.',
+            mod: 'Partial range only: stop at approximately 60° of knee bend — this is roughly quarter-squat depth. Slow and controlled; this is not a sprint round. Alternatively, substitute 20 seconds of max effort on the Bike to skip knee flexion entirely.' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 2, label: 'PULL', title: 'FULL BODY PULL', date: 'OCT 9/10',
+    blocks: [
+      { name: 'STRENGTH', fmt: 'As Many Rounds As Possible — aim for 4 rounds',
+        exercises: [
+          { name: 'Pull-Up', reps: '10', type: 'safe',
+            howTo: 'Hang from a bar with hands shoulder-width apart, palms facing away. Initiate by depressing your shoulder blades, then drive your elbows down toward your hips to pull your chest to the bar. Lower with full control. Use a band for assistance if needed, or do jumping pull-ups with a slow 5-second lowering.' },
+          { name: 'Barbell Hip Thrust', reps: '10', type: 'safe',
+            howTo: 'Sit on the floor with your upper back against a bench and a padded barbell across your hips. Plant your feet flat, hip-width apart. Drive your hips up until your torso is parallel to the floor, squeezing your glutes hard at the top. Lower with control. This is the single best exercise for gluteal strength relative to knee stress.' },
+          { name: 'Three-Point Dumbbell Row', reps: '8.8', type: 'safe',
+            howTo: 'Place one hand on a bench for support. Hinge forward with a flat back. Hold a dumbbell in the free hand. Row it to your hip, keeping your elbow tight to your body. Full stretch at the bottom, full shoulder blade squeeze at the top. "Three-point" means two feet and one hand create a stable tripod.' }
+        ]
+      },
+      { name: 'STRENGTH', fmt: 'Every 3 minutes × 4 sets',
+        exercises: [
+          { name: 'Dumbbell Bent-Over Row', reps: '12', type: 'safe',
+            howTo: 'Stand with feet hip-width apart. Hinge forward at the hips until your torso is nearly parallel to the floor, back flat. Hold a dumbbell in each hand hanging at arm\'s length. Pull both to your hips simultaneously, leading with your elbows. Control the lowering over 2–3 seconds.' },
+          { name: 'Single-Arm Dumbbell Deadlift', reps: '8.8', type: 'safe',
+            howTo: 'Stand with one dumbbell between your feet. Hinge down to grip it with one hand. Keep your hips level — resist the urge to rotate toward the working side. Drive through both feet to stand. Return to the floor with control. A great single-side stability challenge.' },
+          { name: 'Hammer Curl', reps: '10', type: 'safe',
+            howTo: 'Stand holding dumbbells with palms facing inward (neutral/hammer grip). Curl both arms up to shoulder height, keeping the palms-facing-in position throughout. Lower slowly. Works the brachialis and brachioradialis in addition to the bicep.' }
+        ]
+      },
+      { name: 'CONDITIONING', fmt: 'As Many Rounds As Possible — complete both machines',
+        exercises: [
+          { name: 'Ski Erg', reps: '150 meters', type: 'safe',
+            howTo: 'Grip both handles overhead. Pull them down in a sweeping arc to your hips, hinging slightly at the hip and bending your knees minimally. The power comes from your lats, triceps, and core. Reset the handles slowly overhead and repeat continuously. Target a smooth, sustainable pace for 150m.' },
+          { name: 'Rowing Machine', reps: '200 meters', type: 'safe',
+            howTo: 'Drive sequence: legs push (straighten), torso leans back to 11 o\'clock, arms pull handle to lower ribs. Return: arms extend first, torso swings forward, legs compress. Smooth connected motion. At 200m, push for a strong but sustainable pace.' },
+          { name: 'Alternating Dumbbell Snatch', reps: '10', type: 'safe',
+            howTo: 'One dumbbell on the floor. Hinge to grip it. Explosive hip extension drives the weight overhead in one continuous movement — arm locked out at the top. Control the return to the floor. Switch hands each rep. Power from the hips, arm just guides the path.' },
+          { name: 'Medicine Ball Hang Clean', reps: '8', type: 'modify',
+            howTo: 'Hold the ball in front of you at knee height with hips hinged. Explosively drive your hips forward and shrug your shoulders to pull the ball up to chest height. Catch it with soft hands.',
+            mod: 'Keep your feet flat and use minimal knee bend in the catch — think "hip hinge catch" rather than a squat catch. The osteophytes and cartilage loss make a deep-squat catch position risky. If the catch is forcing your knees into deep bend, reduce the weight significantly.' }
+        ]
+      },
+      { name: 'FINISHER', fmt: '3 × 12-minute blocks',
+        exercises: [
+          { name: 'Hollow Hold', reps: '30 seconds', type: 'safe',
+            howTo: 'Lie on your back. Press your entire lower back into the floor and hold it there. Extend both arms overhead and both legs out low (the lower the legs, the harder the exercise). Hold this "banana" shape. You should feel your abs working intensely just to maintain the position — no crunching motion required.' },
+          { name: 'Alternating V-Ups', reps: '30 seconds maximum reps', type: 'modify',
+            howTo: 'Lie on your back with arms overhead. Simultaneously raise one straight leg and the opposite arm to meet above your torso. Lower and switch sides.',
+            mod: 'If you feel a pulling or aching sensation around the kneecap during the leg raise, bend the working knee slightly as it rises. Bent-knee version reduces hip flexor tension that can transfer load through the knee. Alternatively, substitute Dead Bugs for the full 30 seconds.' }
+        ]
+      }
+    ]
+  }
+];
+
+const WEEK_LAYOUTS = {
+  2: [
+    { type:'strength', sid:0 },{ type:'walk' },{ type:'walk' },
+    { type:'strength', sid:1 },{ type:'walk' },{ type:'walk' },{ type:'rest' }
+  ],
+  3: [
+    { type:'strength', sid:0 },{ type:'walk' },{ type:'strength', sid:1 },
+    { type:'walk' },{ type:'strength', sid:2 },{ type:'walk' },{ type:'rest' }
+  ]
+};
+const DAY_ABBRS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
+const WALK_TIPS = [
+  { icon:'⏱', label:'Duration', desc:'20–30 minutes. Start shorter if the knee is flared; build up by 5 minutes each week.' },
+  { icon:'🚶', label:'Pace', desc:'Conversational — you should be able to talk comfortably. This is recovery, not a workout.' },
+  { icon:'🏞', label:'Terrain', desc:'Flat pavement or treadmill preferred. Avoid hills, stairs, or uneven ground until symptoms are stable.' },
+  { icon:'👟', label:'Footwear', desc:'Supportive, cushioned shoes. Good footwear absorbs impact before it reaches the knee.' },
+  { icon:'☀️', label:'Sunlight bonus', desc:'15–20 minutes of daylight exposure supports natural Vitamin D synthesis — pair it with your walk.' },
+  { icon:'🔴', label:'Stop if', desc:'Knee pain rises above 3/10, swelling increases, or the knee feels hot after the walk.' }
+];
+
+const SUGGESTIONS = [
+  'What exactly happens during the procedure?',
+  'How long is recovery?',
+  'Will the cartilage grow back?',
+  'Why is prehab so important?'
+];
+
+const SYSTEM_PROMPT = `You are a knowledgeable and compassionate assistant helping a patient prepare for BMAC (Bone Marrow Aspirate Concentrate) + Intraosseous Bioplasty knee surgery.
+
+Patient context:
+- Full-thickness Grade IV cartilage loss of the patella (kneecap)
+- Bone marrow edema lesion (BML) beneath the cartilage defect
+- Osteophytes (bone spurs) present
+- Currently doing prehabilitation: 2–3 strength sessions/week plus daily walking
+- Goal: optimize prehab before procedure, then return to recreational running post-op
+
+Answer questions clearly, helpfully, and concisely about the procedure, recovery timeline, what the treatment involves, prehab benefits, and what to expect. Keep responses to 3–5 sentences unless more detail is clearly needed. Use plain language. Always suggest that specific medical questions be confirmed with their surgeon.`;
+
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+const state = {
+  tab:'week', sessCount:2, selDay:null,
+  activeSession:0, expandedEx:null, expandedPrehab:null,
+  chatHistory:[], chatLoading:false,
+  apiKey: localStorage.getItem('ji_api_key') || ''
+};
+
+// ═══════════════════════════════════════════════════
+// WEEK TAB
+// ═══════════════════════════════════════════════════
+function getWeekRange() {
+  const today = new Date();
+  const dow = today.getDay();
+  const diffToMon = dow === 0 ? -6 : 1 - dow;
+  const mon = new Date(today); mon.setDate(today.getDate() + diffToMon);
+  const sun = new Date(mon); sun.setDate(mon.getDate() + 6);
+  const f = d => d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  return `Week of ${f(mon)} – ${f(sun)}`;
+}
+function getTodayIdx() {
+  const d = new Date().getDay();
+  return d === 0 ? 6 : d - 1;
+}
+function renderWeek() {
+  document.getElementById('week-sub').textContent = getWeekRange();
+  const layout = WEEK_LAYOUTS[state.sessCount];
+  const todayIdx = getTodayIdx();
+  let html = '';
+  layout.forEach((day, i) => {
+    const icon = day.type === 'strength' ? '💪' : day.type === 'walk' ? '🚶' : '😴';
+    const lbl = day.type === 'strength' ? SESSIONS[day.sid].label : day.type === 'walk' ? 'Walk' : 'Rest';
+    html += `<div class="day-cell ${day.type}${i===todayIdx?' today':''}${i===state.selDay?' sel':''}" data-i="${i}">
+      <span class="day-abbr">${DAY_ABBRS[i]}</span>
+      <span class="day-icon">${icon}</span>
+      <span class="day-type">${lbl}</span>
+    </div>`;
+  });
+  document.getElementById('day-strip').innerHTML = html;
+  document.querySelectorAll('.day-cell').forEach(el => {
+    el.addEventListener('click', () => {
+      const i = parseInt(el.dataset.i);
+      state.selDay = state.selDay === i ? null : i;
+      renderWeek();
+    });
+  });
+  renderDayDetail();
+}
+function renderDayDetail() {
+  const el = document.getElementById('day-detail');
+  if (state.selDay === null) { el.innerHTML = ''; return; }
+  const layout = WEEK_LAYOUTS[state.sessCount];
+  const day = layout[state.selDay];
+  const abbr = DAY_ABBRS[state.selDay];
+  const isToday = state.selDay === getTodayIdx();
+  const dayLbl = isToday ? 'Today' : abbr;
+  if (day.type === 'strength') {
+    const sess = SESSIONS[day.sid];
+    const mods = sess.blocks.reduce((n,b) => n + b.exercises.filter(e=>e.type==='modify').length, 0);
+    el.innerHTML = `<div class="day-detail s-detail">
+      <div class="dd-label">${dayLbl} · Strength Session</div>
+      <div class="dd-title">${sess.title}</div>
+      <div class="dd-chips">
+        ${mods>0?`<span class="dd-chip warn">⚠ ${mods} Knee Mod${mods>1?'s':''}</span>`:'<span class="dd-chip green">✓ All Moves Safe</span>'}
+        <span class="dd-chip blue">${sess.blocks.length} Blocks + Prehab</span>
+      </div>
+      <button class="view-btn" data-sid="${day.sid}">View Full Workout →</button>
+    </div>`;
+    el.querySelector('.view-btn').addEventListener('click', e => {
+      state.activeSession = parseInt(e.target.dataset.sid);
+      state.expandedEx = null;
+      switchTab('workout');
+      renderSessionPills();
+      renderWorkout();
+    });
+  } else if (day.type === 'walk') {
+    el.innerHTML = `<div class="day-detail w-detail">
+      <div class="dd-label">${dayLbl} · Active Recovery</div>
+      <div class="dd-title">Walk Day</div>
+      <div class="dd-desc">Low-impact movement keeps blood flowing to the joint and supports healing without stressing the cartilage.</div>
+      <div class="dd-chips"><span class="dd-chip green">20–30 min</span><span class="dd-chip green">Flat terrain</span><span class="dd-chip green">Easy pace</span></div>
+    </div>
+    <div class="card">${WALK_TIPS.map(t=>`<div class="walk-tip"><div class="wt-icon">${t.icon}</div><div><div class="wt-label">${t.label}</div><div class="wt-desc">${t.desc}</div></div></div>`).join('')}</div>`;
+  } else {
+    el.innerHTML = `<div class="day-detail r-detail">
+      <div class="dd-label">${dayLbl}</div>
+      <div class="dd-title">Rest Day</div>
+      <div class="dd-desc">Full recovery. Sleep, gentle stretching, and good nutrition do the work today. The joint heals during rest, not during training.</div>
+    </div>`;
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// WORKOUT TAB
+// ═══════════════════════════════════════════════════
+function renderSessionPills() {
+  document.getElementById('sess-pills').innerHTML = SESSIONS.map(s =>
+    `<button class="sess-pill${s.id===state.activeSession?' active':''}" data-sid="${s.id}">${s.label}</button>`
+  ).join('');
+  document.querySelectorAll('.sess-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.activeSession = parseInt(btn.dataset.sid);
+      state.expandedEx = null;
+      renderSessionPills();
+      renderWorkout();
+    });
+  });
+}
+function renderWorkout() {
+  const sess = SESSIONS[state.activeSession];
+  const mods = sess.blocks.reduce((n,b) => n + b.exercises.filter(e=>e.type==='modify').length, 0);
+  let html = `<div class="sh-eye">${sess.date}</div>
+    <div class="sh-title">${sess.title}</div>
+    <div class="sh-meta">
+      ${mods>0?`<span class="sh-tag mods">⚠ ${mods} Knee Mod${mods>1?'s':''}</span>`:''}
+      <span class="sh-tag ok">Tap any exercise for how-to</span>
+    </div>`;
+  sess.blocks.forEach(block => {
+    html += `<div class="block-card"><div class="block-head"><span class="block-name">${block.name}</span><span class="block-fmt">${block.fmt}</span></div>`;
+    block.exercises.forEach((ex, i) => {
+      const key = `${sess.id}-${block.name}-${i}`;
+      const open = state.expandedEx === key;
+      const dotCls = ex.type==='safe'?'safe':ex.type==='modify'?'modify':'note';
+      html += `<div class="ex-row" data-key="${key}">
+        <div class="ex-dot ${dotCls}"></div>
+        <div class="ex-body">
+          <div class="ex-name">${ex.name}</div>
+          <div class="ex-reps">${ex.reps}</div>
+          ${ex.type==='modify'?'<div class="ex-hint warn">⚠ Knee mod · Tap for details</div>':'<div class="ex-hint">Tap for how-to</div>'}
+        </div>
+      </div>
+      <div class="ex-expand${open?' open':''}" id="xp-${key}">
+        <div class="ex-howto-label">How to do it</div>
+        <div class="ex-howto">${ex.howTo}</div>
+        ${ex.type==='modify'?`<div class="ex-mod-label-hd">⚠ Knee Modification</div><div class="ex-mod-block">${ex.mod}</div>`:''}
+        ${ex.type==='note'&&ex.note?`<div class="ex-note-block">${ex.note}</div>`:''}
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  // Prehab
+  html += `<div class="prehab-card"><div class="prehab-head"><div class="prehab-name">${PREHAB.name}</div><div class="prehab-fmt">${PREHAB.fmt}</div></div><div class="prehab-note">${PREHAB.note}</div>`;
+  PREHAB.exercises.forEach((ex,i) => {
+    const pk = `prehab-${i}`;
+    const open = state.expandedPrehab === pk;
+    html += `<div class="prehab-ex" data-pk="${pk}">
+      <div class="prehab-ex-name">${ex.name}</div>
+      <div class="prehab-ex-detail">${ex.detail}</div>
+      <div class="prehab-ex-reps">${ex.reps}</div>
+      <div class="prehab-ex-body${open?' open':''}">
+        <div class="prehab-ex-cue">${ex.cue}</div>
+      </div>
+    </div>`;
+  });
+  html += `</div><div style="height:10px"></div>`;
+  document.getElementById('workout-content').innerHTML = html;
+  document.querySelectorAll('.ex-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const k = row.dataset.key;
+      state.expandedEx = state.expandedEx === k ? null : k;
+      renderWorkout();
+    });
+  });
+  document.querySelectorAll('.prehab-ex').forEach(el => {
+    el.addEventListener('click', () => {
+      const pk = el.dataset.pk;
+      state.expandedPrehab = state.expandedPrehab === pk ? null : pk;
+      renderWorkout();
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// NUTRITION
+// ═══════════════════════════════════════════════════
+function initNutrition() {
+  document.querySelectorAll('.food-cat').forEach(cat => {
+    cat.querySelector('.fc-head').addEventListener('click', () => {
+      const body = cat.querySelector('.fc-body');
+      const arrow = cat.querySelector('.fc-arrow');
+      const open = body.classList.toggle('open');
+      arrow.classList.toggle('open', open);
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// AI CHAT
+// ═══════════════════════════════════════════════════
+function renderChat() {
+  const body = document.getElementById('chat-body');
+  if (!state.apiKey) {
+    body.innerHTML = `<div class="chat-key-setup">
+      <div class="chat-key-label">Add your Anthropic API key to ask AI questions about your procedure and recovery.</div>
+      <div class="chat-key-row">
+        <input class="chat-key-input" id="api-key-input" type="password" placeholder="sk-ant-api03-..." autocomplete="off"/>
+        <button class="chat-key-btn" id="api-key-save">Enable</button>
+      </div>
+      <div class="chat-key-note">Your key is stored locally on this device only and never shared.</div>
+    </div>`;
+    document.getElementById('api-key-save').addEventListener('click', () => {
+      const val = document.getElementById('api-key-input').value.trim();
+      if (val) { state.apiKey = val; localStorage.setItem('ji_api_key', val); renderChat(); }
+    });
+    document.getElementById('api-key-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('api-key-save').click();
+    });
+    return;
+  }
+  let msgsHtml = '';
+  if (state.chatHistory.length === 0) {
+    msgsHtml = `<div class="msg ai">Hi! I can answer questions about your BMAC + Bioplasty procedure, recovery, what to expect, or how prehab helps. What would you like to know?</div>`;
+  } else {
+    state.chatHistory.forEach(m => {
+      msgsHtml += `<div class="msg ${m.role==='user'?'user':'ai'}">${escHtml(m.content)}</div>`;
+    });
+    if (state.chatLoading) msgsHtml += `<div class="msg ai thinking">Thinking...</div>`;
+  }
+  body.innerHTML = `
+    <div class="chat-suggestions">${SUGGESTIONS.map(s=>`<span class="chat-sug" data-q="${escHtml(s)}">${s}</span>`).join('')}</div>
+    <div class="chat-msgs" id="chat-msgs">${msgsHtml}</div>
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chat-input" rows="1" placeholder="Ask anything about your procedure..."></textarea>
+      <button class="chat-send" id="chat-send" ${state.chatLoading?'disabled':''}>
+        <svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+      </button>
+    </div>
+    <div class="chat-reset" id="chat-reset">Clear conversation · Change API key</div>`;
+  const msgs = document.getElementById('chat-msgs');
+  msgs.scrollTop = msgs.scrollHeight;
+  document.querySelectorAll('.chat-sug').forEach(s => {
+    s.addEventListener('click', () => sendMessage(s.dataset.q));
+  });
+  document.getElementById('chat-send').addEventListener('click', () => {
+    const val = document.getElementById('chat-input').value.trim();
+    if (val) sendMessage(val);
+  });
+  document.getElementById('chat-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); document.getElementById('chat-send').click(); }
+  });
+  document.getElementById('chat-reset').addEventListener('click', () => {
+    if (confirm('Clear conversation and/or reset API key?')) {
+      state.chatHistory = []; state.apiKey = ''; localStorage.removeItem('ji_api_key'); renderChat();
+    }
+  });
+}
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+async function sendMessage(text) {
+  if (state.chatLoading || !text) return;
+  state.chatHistory.push({ role:'user', content:text });
+  state.chatLoading = true;
+  renderChat();
+  try {
+    const messages = state.chatHistory.map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.content }));
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': state.apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 600,
+        system: SYSTEM_PROMPT,
+        messages
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    const reply = data.content[0].text;
+    state.chatHistory.push({ role:'assistant', content:reply });
+  } catch(e) {
+    state.chatHistory.push({ role:'assistant', content:`Sorry, something went wrong: ${e.message}. Check your API key or try again.` });
+  }
+  state.chatLoading = false;
+  renderChat();
+}
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+function switchTab(tab) {
+  state.tab = tab;
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.tab===tab));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id===`tab-${tab}`));
+  if (tab === 'info') renderChat();
+}
+document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+document.querySelectorAll('#sess-toggle .tog-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    state.sessCount = parseInt(btn.dataset.n);
+    state.selDay = null;
+    document.querySelectorAll('#sess-toggle .tog-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderWeek();
+  });
+});
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+renderWeek();
+state.selDay = getTodayIdx();
+renderWeek();
+renderSessionPills();
+renderWorkout();
+initNutrition();
+</script>
+</body>
+</html>
