@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: joint-intelligence
+    name: bees-knees
     env: static
     staticPublishPath: /
     buildCommand: ""
