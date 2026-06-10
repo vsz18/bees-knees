@@ -6,32 +6,36 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>The Bees Knees</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Serif+Display:ital@1&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg:#0d0c0b;--card:#171614;--card2:#1f1e1b;--border:#2d2b28;--border2:#3a3834;
       --text:#f0ede8;--text2:#9a9490;--text3:#504d49;
-      --accent:#00d4ff;--accent-dim:rgba(0,212,255,.09);--accent-border:rgba(0,212,255,.28);
+      --accent:#ff7043;--accent-dim:rgba(255,112,67,.09);--accent-border:rgba(255,112,67,.28);
       --warn:#ffc107;--warn-dim:rgba(255,193,7,.10);--warn-border:rgba(255,193,7,.30);
-      --safe:#00e676;--safe-dim:rgba(0,230,118,.09);--green:#4caf50;--red:#ff5252;
+      --safe:#f06292;--safe-dim:rgba(240,98,146,.09);--green:#e0527a;--red:#ff5252;
       --card-shadow:none;--hover-bg:rgba(255,255,255,.03);
     }
     html.light {
       --bg:#f5f3ef;--card:#fefefe;--card2:#edeae5;--border:#dedad4;--border2:#cbc8c1;
       --text:#1c1a17;--text2:#6b6760;--text3:#a09d96;
-      --accent:#007fa0;--accent-dim:rgba(0,127,160,.09);--accent-border:rgba(0,127,160,.28);
+      --accent:#c43a00;--accent-dim:rgba(196,58,0,.09);--accent-border:rgba(196,58,0,.28);
       --warn:#a06000;--warn-dim:rgba(160,96,0,.09);--warn-border:rgba(160,96,0,.28);
-      --safe:#1a7a42;--safe-dim:rgba(26,122,66,.09);--green:#2a6e30;--red:#cc2a2a;
+      --safe:#b51860;--safe-dim:rgba(181,24,96,.09);--green:#961450;--red:#cc2a2a;
       --card-shadow:0 2px 14px rgba(0,0,0,.07);--hover-bg:rgba(0,0,0,.03);
     }
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-    html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;overflow:hidden}
+    html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;overflow:hidden}
     #app{height:100%;display:flex;flex-direction:column;max-width:480px;margin:0 auto}
     .app-body{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
 
     /* TOP */
     .top-bar{flex-shrink:0;padding:14px 20px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:var(--bg)}
-    .wordmark{font-size:17px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
-    .wordmark em{color:var(--accent);font-style:normal}
+    .wordmark{display:flex;flex-direction:column;line-height:1;gap:1px;cursor:default}
+    .wordmark-eye{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--text3)}
+    .wordmark-main{font-family:'DM Serif Display',serif;font-style:italic;font-size:23px;color:var(--accent);letter-spacing:-.01em;line-height:1}
     .top-right{display:flex;align-items:center;gap:8px}
     .theme-btn{width:30px;height:30px;background:var(--card2);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;flex-shrink:0;transition:background .2s,border-color .2s}
     .phase-pill{background:var(--accent-dim);border:1px solid var(--accent-border);color:var(--accent);font-size:10px;font-weight:800;letter-spacing:.12em;padding:4px 10px;border-radius:20px;text-transform:uppercase}
@@ -66,8 +70,8 @@
     .day-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:16px}
     .day-cell{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:14px;cursor:pointer;border:1px solid transparent;transition:all .2s;position:relative}
     .day-cell:active{opacity:.7}
-    .day-cell.strength{background:rgba(0,212,255,.07);border-color:rgba(0,212,255,.2)}
-    .day-cell.walk{background:rgba(76,175,80,.07);border-color:rgba(76,175,80,.15)}
+    .day-cell.strength{background:rgba(255,112,67,.07);border-color:rgba(255,112,67,.2)}
+    .day-cell.walk{background:rgba(240,98,146,.07);border-color:rgba(240,98,146,.15)}
     .day-cell.rest{background:var(--card);border-color:var(--border)}
     .day-cell.sel{outline:2px solid var(--accent);outline-offset:1px}
     .day-cell.today .day-abbr{color:var(--warn)}
@@ -82,8 +86,8 @@
     .day-cell.walk .day-type{color:var(--green)}
     .day-cell.rest .day-type{color:var(--text3)}
     .day-detail{border-radius:20px;padding:18px;margin-bottom:16px;box-shadow:var(--card-shadow)}
-    .day-detail.s-detail{background:rgba(0,212,255,.06);border:1px solid var(--accent-border)}
-    .day-detail.w-detail{background:rgba(76,175,80,.06);border:1px solid rgba(76,175,80,.2)}
+    .day-detail.s-detail{background:rgba(255,112,67,.06);border:1px solid var(--accent-border)}
+    .day-detail.w-detail{background:rgba(240,98,146,.06);border:1px solid rgba(240,98,146,.2)}
     .day-detail.r-detail{background:var(--card);border:1px solid var(--border)}
     .dd-label{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
     .s-detail .dd-label{color:var(--accent)}.w-detail .dd-label{color:var(--green)}.r-detail .dd-label{color:var(--text3)}
@@ -92,7 +96,7 @@
     .dd-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
     .dd-chip{font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px}
     .dd-chip.blue{background:var(--accent-dim);border:1px solid var(--accent-border);color:var(--accent)}
-    .dd-chip.green{background:rgba(76,175,80,.1);border:1px solid rgba(76,175,80,.2);color:var(--green)}
+    .dd-chip.green{background:rgba(240,98,146,.1);border:1px solid rgba(240,98,146,.2);color:var(--green)}
     .dd-chip.warn{background:var(--warn-dim);border:1px solid var(--warn-border);color:var(--warn)}
     .view-btn{display:block;width:100%;margin-top:14px;padding:13px;background:var(--accent);color:#000;border:none;border-radius:14px;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:opacity .2s}
     .view-btn:active{opacity:.8}
@@ -108,7 +112,8 @@
     .sh-meta{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap;margin-bottom:16px}
     .sh-tag{font-size:10px;font-weight:800;letter-spacing:.08em;padding:4px 10px;border-radius:20px;text-transform:uppercase}
     .sh-tag.mods{background:var(--warn-dim);border:1px solid var(--warn-border);color:var(--warn)}
-    .sh-tag.ok{background:var(--safe-dim);border:1px solid rgba(0,230,118,.2);color:var(--safe)}
+    .sh-tag.ok{background:var(--safe-dim);border:1px solid rgba(240,98,146,.2);color:var(--safe)}
+    .timer-hint{display:inline-block;background:var(--accent-dim);border:1px solid var(--accent-border);color:var(--accent);font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;margin-bottom:16px;letter-spacing:.02em}
     .block-card{background:var(--card);border:1px solid var(--border);border-radius:18px;margin-bottom:12px;overflow:hidden;box-shadow:var(--card-shadow)}
     .block-head{background:var(--card2);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);gap:8px}
     .block-head-left{display:flex;flex-direction:column;gap:2px}
@@ -192,6 +197,9 @@
     .rc-bullet{display:flex;gap:8px;margin-bottom:7px}
     .rc-bullet:last-child{margin-bottom:0}
     .rc-dot{font-size:0;width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:6px}
+    .q-dot{font-size:0;width:6px;height:6px;border-radius:50%;background:var(--warn);flex-shrink:0;margin-top:7px}
+    .q-section{font-size:10px;font-weight:800;letter-spacing:.1em;color:var(--text3);text-transform:uppercase;margin:16px 0 8px;padding-bottom:7px;border-bottom:1px solid var(--border)}
+    .q-section:first-child{margin-top:0}
     .rc-bullet-text{font-size:13px;color:var(--text2);line-height:1.45}
     .stat-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
     .stat-box{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:12px 8px;text-align:center}
@@ -214,7 +222,7 @@
     .tl-item{display:flex;gap:14px}
     .tl-line{display:flex;flex-direction:column;align-items:center}
     .tl-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;margin-top:3px}
-    .tl-dot.now{background:var(--accent);box-shadow:0 0 0 3px rgba(0,212,255,.18)}
+    .tl-dot.now{background:var(--accent);box-shadow:0 0 0 3px rgba(255,112,67,.18)}
     .tl-dot.fut{background:var(--border2)}
     .tl-bar{width:2px;flex:1;background:var(--border);margin-top:3px;min-height:28px}
     .tl-content{flex:1;padding-bottom:14px}
@@ -225,7 +233,7 @@
     @media(min-width:768px){
       #app{max-width:1140px}
       .top-bar{padding:16px 36px}
-      .wordmark{font-size:19px}
+      .wordmark-main{font-size:26px}
       .app-body{flex-direction:row}
       .top-nav{flex-direction:column;width:200px;flex-shrink:0;border-right:1px solid var(--border);border-bottom:none;padding:20px 12px;gap:4px;overflow-y:auto}
       .nav-btn{flex-direction:row;justify-content:flex-start;width:100%;gap:11px;padding:11px 14px;border-bottom:none;border-left:3px solid transparent;border-radius:12px;font-size:11px;letter-spacing:.04em;margin-bottom:0;text-align:left}
@@ -241,7 +249,10 @@
 <body>
 <div id="app">
   <div class="top-bar">
-    <div class="wordmark">The Bees <em>Knees</em></div>
+    <div class="wordmark">
+      <span class="wordmark-eye">the bees</span>
+      <span class="wordmark-main">Knees</span>
+    </div>
     <div class="top-right">
       <button class="theme-btn" id="theme-btn">🌙</button>
       <div class="phase-pill">Prehab</div>
@@ -266,7 +277,7 @@
 
     <!-- ══════════ EXERCISES ══════════ -->
     <div id="tab-exercises" class="tab-panel active">
-      <div class="week-title">Your <em>Week</em></div>
+      <div class="week-title" id="week-title">Loading</div>
       <div class="week-sub" id="week-sub">Loading...</div>
       <div class="toggle-label">Strength sessions / week</div>
       <div class="toggle-row" id="sess-toggle">
@@ -389,19 +400,35 @@
       <div class="tl-item"><div class="tl-line"><div class="tl-dot fut"></div><div class="tl-bar"></div></div><div class="tl-content"><div class="tl-phase fut">Post-Op Phases 1–2</div><div class="tl-title">Protect, Then Load</div><div class="tl-desc">Weeks 0–6: isometrics, pool, gentle ROM. Weeks 6–16: progressive gym loading.</div></div></div>
       <div class="tl-item" style="margin-bottom:16px"><div class="tl-line"><div class="tl-dot fut"></div></div><div class="tl-content"><div class="tl-phase fut">Goal</div><div class="tl-title">Return to Running</div><div class="tl-desc">4–12 months post-procedure with a walk/run return-to-run protocol.</div></div></div>
 
-      <div class="section-label">Movement Rules</div>
-      <div class="rules-card avoid-card"><div class="rules-hd" style="background:var(--card2)"><span style="font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--red)">Always Avoid</span></div>
-        <div class="rule-row"><div class="rule-icon"></div><div class="rule-text">All jumping and impact — box jumps, jump squats, running, plyometrics</div></div>
-        <div class="rule-row"><div class="rule-icon"></div><div class="rule-text">Deep knee flexion past 60–70° under load (deep squats, full lunges, cyclist squat)</div></div>
-        <div class="rule-row"><div class="rule-icon"></div><div class="rule-text">Twisting under load</div></div>
-        <div class="rule-row"><div class="rule-icon"></div><div class="rule-text">Anything causing knee pain above 3/10 — modify or stop</div></div>
+      <div class="section-label">Questions for Your Doctor</div>
+      <div class="research-card" style="margin-bottom:20px">
+        <div class="rc-head"><div class="rc-title">Bring These to Your Next Appointment</div></div>
+        <div class="rc-body">
+
+          <div class="q-section">Your Diagnosis</div>
+          <div class="rc-bullet"><div class="q-dot"></div><div class="rc-bullet-text">The full-thickness defect is on the lateral facet of the patella — what is the approximate size of the lesion, and how does that affect what we can realistically expect from BMAC?</div></div>
+          <div class="rc-bullet"><div class="q-dot"></div><div class="rc-bullet-text">My TTTG is 10.1, within normal range — but is lateral patellar compression or tilt still contributing to the wear pattern, and does that change any part of the treatment plan?</div></div>
+          <div class="rc-bullet"><div class="q-dot"></div><div class="rc-bullet-text">The subchondral cyst and bone marrow edema are on the same lateral side as the cartilage defect. Will the intraosseous injection address the cyst directly, or is that a separate concern to monitor?</div></div>
+          <div class="rc-bullet" style="margin-bottom:0"><div class="q-dot"></div><div class="rc-bullet-text">Are the osteophytes at a stage that needs to be addressed, or are they being managed conservatively for now?</div></div>
+
+          <div class="q-section">The Procedure</div>
+          <div class="rc-bullet"><div class="q-dot"></div><div class="rc-bullet-text">Will the BMAC be delivered both intra-articularly (into the joint space) and intraosseously (into the bone), or just one site?</div></div>
+          <div class="rc-bullet"><div class="q-dot"></div><div class="rc-bullet-text">What imaging will you use post-op and at what intervals — MRI at 3 months, 6 months? What are we looking for to confirm repair is progressing?</div></div>
+          <div class="rc-bullet" style="margin-bottom:0"><div class="q-dot"></div><div class="rc-bullet-text">What would indicate the procedure hasn't worked, and at what point would we consider a follow-up intervention?</div></div>
+
+          <div class="q-section">Prehab &amp; Timing</div>
+          <div class="rc-bullet"><div class="q-dot"></div><div class="rc-bullet-text">Are there any exercises in my current prehab program that could further stress the lateral patella cartilage before the procedure?</div></div>
+          <div class="rc-bullet"><div class="q-dot"></div><div class="rc-bullet-text">Is there a quad strength target or specific milestone you want me to hit before scheduling the procedure?</div></div>
+          <div class="rc-bullet" style="margin-bottom:0"><div class="q-dot"></div><div class="rc-bullet-text">Is there an optimal timing window — does waiting longer for more prehab strength improve outcomes, or is there a point of diminishing returns?</div></div>
+
+          <div class="q-section">Return to Running &amp; Marathon</div>
+          <div class="rc-bullet"><div class="q-dot"></div><div class="rc-bullet-text">Given full-thickness lateral patella cartilage loss, is marathon running a realistic long-term goal — and what does the repair need to look like at 12 months to pursue it?</div></div>
+          <div class="rc-bullet"><div class="q-dot"></div><div class="rc-bullet-text">What does the return-to-run protocol look like: what metrics trigger progression, and what surfaces and volumes are safest in the early stages?</div></div>
+          <div class="rc-bullet" style="margin-bottom:0"><div class="q-dot"></div><div class="rc-bullet-text">Is there a long-term risk that repetitive running loads will wear down the repaired tissue faster than native cartilage, and how do we monitor for that?</div></div>
+
+        </div>
       </div>
-      <div class="rules-card ok-card" style="margin-bottom:20px"><div class="rules-hd" style="background:var(--card2)"><span style="font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--safe)">Always OK</span></div>
-        <div class="rule-row"><div class="rule-icon"></div><div class="rule-text">Hip-dominant work: Romanian deadlifts, hip thrusts, deadlifts, glute bridges</div></div>
-        <div class="rule-row"><div class="rule-icon"></div><div class="rule-text">All upper body training as programmed</div></div>
-        <div class="rule-row"><div class="rule-icon"></div><div class="rule-text">Bike, row erg, ski erg at low–moderate effort</div></div>
-        <div class="rule-row"><div class="rule-icon"></div><div class="rule-text">Walking on flat terrain — daily, comfortable pace</div></div>
-      </div>
+
     </div>
 
   </div><!-- end tab-content -->
@@ -416,12 +443,14 @@
 const PREHAB = {
   name: 'PREHAB ADD-ON',
   fmt: '3 ROUNDS — DO EVERY SESSION',
-  note: 'The most important 15 minutes for your knee. VMO activation and hip stability directly protect the patella under load.',
+  note: 'The most important 15 minutes for your knee. VMO activation builds a "quad cushion" that offloads the lateral patella defect. Strong glutes reduce lateral tracking stress on the kneecap by up to 30% during daily movement. Do this every session — it is more important than the workout itself.',
   exercises: [
     { name: 'Terminal Knee Extension', detail: 'Resistance band looped around knee, standing', reps: '3 × 15 each side',
       cue: 'Start with a slight bend in the knee. Straighten fully against the band, hold 1 second at full extension. Slow 3-second return. You should feel the inner quad (VMO) above the kneecap fire.' },
     { name: 'VMO Isometric Quad Set', detail: 'Lying on your back, small rolled towel under one knee', reps: '3 × 30 seconds',
-      cue: 'Press your knee down into the towel. No movement — pure muscle tension. The goal is to feel the teardrop-shaped VMO muscle just above and inside the kneecap switch on.' },
+      cue: 'Press your knee down into the towel. No movement — pure muscle tension. The goal is to feel the teardrop-shaped VMO muscle just above and inside the kneecap switch on. This is zero-compression quad work — no patellofemoral contact at full extension.' },
+    { name: 'Straight Leg Raise', detail: 'Lying on your back, non-working leg bent with foot flat', reps: '3 × 12 each side',
+      cue: 'Lock the working knee completely straight and flex your foot back toward your shin. Lift the leg to about 12 inches off the floor, pause for one second, then lower with control. Add an ankle weight once this feels easy and pain-free. This is the safest way to load the quad — the patella stays completely unloaded throughout.' },
     { name: 'Side-Lying Hip Abduction', detail: 'Lying on your side, mini band above knees', reps: '3 × 15 each side',
       cue: 'Lift the top leg slowly without letting your hip roll backward. Feel the outer glute working, not your hip flexor or lower back. Slow and controlled throughout.' },
     { name: 'Single-Leg Calf Raise', detail: 'Standing on a step edge, one foot at a time', reps: '3 × 12 each side',
@@ -483,7 +512,7 @@ const SESSIONS = [
         exercises: [
           { name: 'Goblet Lateral Squat (3-second lowering)', reps: '6.6 each side', type: 'modify',
             howTo: 'Hold a kettlebell at your chest. Take a wide stance. Shift your weight to one side and bend that knee while keeping the other leg straight. Take 3 seconds on the way down. Push through the working heel to return.',
-            mod: 'Limit the working knee to approximately 60° of bend — about halfway to parallel. Avoid the full depth shown in class. Keep the loaded knee tracking over your second toe at all times. If you feel clicking, grinding, or catching: substitute Standing Hip Abduction with a band × 15 reps each side.' },
+            mod: 'Important: a lateral squat shifts your bodyweight directly into the outer (lateral) side of the kneecap — exactly where your full-thickness defect and bone edema are. Limit the working knee to approximately 60° of bend and move slowly. At any pinching, grinding, or clicking, stop and substitute Standing Hip Abduction with a band × 15 reps each side instead. When in doubt, substitute.' },
           { name: 'Box Step-Up', reps: '3–5 each side', type: 'modify',
             howTo: 'Stand in front of a sturdy box. Step up with one foot, press through that heel to bring the other foot up to the box. Step back down one foot at a time.',
             mod: 'This replaces the Box Jump entirely. The step-down is the important part — take 3 full seconds on the descent. This slow eccentric builds exactly the quad control needed for your recovery. No jumping, no landing.' }
@@ -504,7 +533,7 @@ const SESSIONS = [
         exercises: [
           { name: 'Barbell Reverse Lunge (flat floor)', reps: '5.5 each side', type: 'modify',
             howTo: 'Hold a barbell on your back or dumbbells at your sides. Step backward with one foot, lowering your back knee toward the floor. Push through your front heel to return to standing.',
-            mod: 'Do not use a deficit plate — flat floor only. Take a full 3 seconds on the descent. Keep your front shin as vertical as possible by stepping back far enough. The front knee should bend to about 80° max — not beyond that.' },
+            mod: 'Flat floor only — no deficit plate. Step back far enough to keep your front shin as vertical as possible. Take 3 full seconds on the descent. Front knee bends to 70° max — stop before hitting parallel. The lateral patella defect means deeper flexion angles put direct bone-on-bone pressure on the exact spot you are trying to protect.' },
           { name: 'Dumbbell Romanian Deadlift (3-second lowering)', reps: '5', type: 'safe',
             howTo: 'Stand holding dumbbells in front of your thighs. Hinge at the hips, pushing them backward, and lower the weights along your shins with a flat back. Take 3 full seconds on the way down. Feel the hamstring stretch at the bottom. Drive your hips forward to return to standing. Soft knee bend throughout — this is a hip hinge, not a squat.' },
           { name: 'Single-Arm Kettlebell Suitcase March', reps: '12.12', type: 'safe',
@@ -514,18 +543,18 @@ const SESSIONS = [
       { name: 'CONDITIONING', fmt: 'Sprint — Every Minute On the Minute × 9', mins: 9,
         exercises: [
           { name: 'Minute 1: Assault Bike', reps: '10 calories', type: 'safe',
-            howTo: 'Push through a full sprint for the entire minute. The bike is excellent for your condition — knees stay in a safe flexion range throughout, and the upper body drive adds to the intensity without extra joint load.' },
+            howTo: 'Set the seat high enough that your knee has only a slight bend at the bottom of the pedal stroke — this keeps the knee out of the deep flexion range that compresses the lateral patella defect. Push through a full sprint for the entire minute. The bike is excellent for your condition — upper body drive adds intensity without extra joint load.' },
           { name: 'Minute 2: Rowing Machine', reps: '10–15 calories', type: 'safe',
             howTo: 'Drive sequence: legs push first, then torso leans back slightly, then arms pull the handle to your lower ribs. Return: arms extend, lean forward, legs bend. Smooth, connected rhythm. The rowing motion keeps your knee in a safe range of motion.' },
           { name: 'Minute 3: Air Squat', reps: '20', type: 'modify',
             howTo: 'Feet shoulder-width apart, toes turned out about 30 degrees. Lower down, arms reaching forward for balance.',
-            mod: 'Partial range only: stop at approximately 60° of knee bend — this is roughly quarter-squat depth. Slow and controlled; this is not a sprint round. Alternatively, substitute 20 seconds of max effort on the Bike to skip knee flexion entirely.' }
+            mod: 'Partial range only: stop at approximately 60° of knee bend — roughly quarter-squat depth, nowhere near parallel. Slow and controlled; treat this as a strength rep, not a sprint. Alternatively — and preferably on a flare day — substitute 20 seconds of max effort on the Bike instead. The squat position puts direct load on the lateral patella defect so when in doubt, bike.' }
         ]
       }
     ]
   },
   {
-    id: 2, label: 'PULL', title: 'FULL BODY PULL', date: 'OCT 9/10',
+    id: 2, label: 'PULL', title: 'FULL BODY PULL', date: 'JUNE 13/14',
     blocks: [
       { name: 'STRENGTH', fmt: 'As Many Rounds As Possible — aim for 4 rounds', mins: 12,
         exercises: [
@@ -557,7 +586,7 @@ const SESSIONS = [
             howTo: 'One dumbbell on the floor. Hinge to grip it. Explosive hip extension drives the weight overhead in one continuous movement — arm locked out at the top. Control the return to the floor. Switch hands each rep. Power from the hips, arm just guides the path.' },
           { name: 'Medicine Ball Hang Clean', reps: '8', type: 'modify',
             howTo: 'Hold the ball in front of you at knee height with hips hinged. Explosively drive your hips forward and shrug your shoulders to pull the ball up to chest height. Catch it with soft hands.',
-            mod: 'Keep your feet flat and use minimal knee bend in the catch — think "hip hinge catch" rather than a squat catch. The osteophytes and cartilage loss make a deep-squat catch position risky. If the catch is forcing your knees into deep bend, reduce the weight significantly.' }
+            mod: 'Catch with a "hip hinge" rather than a squat — feet flat, minimal knee bend, hips back. A deep-squat catch compresses the lateral patella defect and can aggravate the bone edema. If the weight requires any significant squat depth to absorb, reduce load or substitute a Dumbbell Hang Power Shrug (same hip drive, no catch).' }
         ]
       },
       { name: 'FINISHER', fmt: '3 × 12-minute blocks', mins: 4,
@@ -566,7 +595,7 @@ const SESSIONS = [
             howTo: 'Lie on your back. Press your entire lower back into the floor and hold it there. Extend both arms overhead and both legs out low (the lower the legs, the harder the exercise). Hold this "banana" shape. You should feel your abs working intensely just to maintain the position — no crunching motion required.' },
           { name: 'Alternating V-Ups', reps: '30 seconds maximum reps', type: 'modify',
             howTo: 'Lie on your back with arms overhead. Simultaneously raise one straight leg and the opposite arm to meet above your torso. Lower and switch sides.',
-            mod: 'If you feel a pulling or aching sensation around the kneecap during the leg raise, bend the working knee slightly as it rises. Bent-knee version reduces hip flexor tension that can transfer load through the knee. Alternatively, substitute Dead Bugs for the full 30 seconds.' }
+            mod: 'If you feel a pulling or aching sensation around the outer kneecap during the leg raise, bend the working knee slightly as it rises. Bent-knee version reduces hip flexor tension that can refer into the lateral patella. On any day the knee is irritated or swollen, substitute Dead Bugs for the full 30 seconds instead.' }
         ]
       }
     ]
@@ -618,7 +647,14 @@ function getTodayIdx() {
   const d = new Date().getDay();
   return d === 0 ? 6 : d - 1;
 }
+function getTodayLabel() {
+  const today = new Date();
+  return today.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+}
 function renderWeek() {
+  const titleEl = document.getElementById('week-title');
+  const [weekday, ...rest] = getTodayLabel().split(', ');
+  titleEl.innerHTML = `${weekday}, <em>${rest.join(', ')}</em>`;
   document.getElementById('week-sub').textContent = getWeekRange();
   const layout = WEEK_LAYOUTS[state.sessCount];
   const todayIdx = getTodayIdx();
@@ -734,7 +770,8 @@ function buildWorkoutHtml(sess) {
     <div class="sh-meta">
       ${mods>0?`<span class="sh-tag mods">⚠ ${mods} Knee Mod${mods>1?'s':''}</span>`:''}
       <span class="sh-tag ok">Tap any exercise for how-to</span>
-    </div>`;
+    </div>
+    <div class="timer-hint">Click timer to start block</div>`;
   sess.blocks.forEach((block, bi) => {
     const bk = `${sess.id}-${bi}`;
     const tot = block.mins * 60;
