@@ -103,10 +103,6 @@
     .wt-desc{font-size:13px;color:var(--text2);line-height:1.45}
 
     /* ── WORKOUT ── */
-    .sess-row{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
-    .sess-row::-webkit-scrollbar{display:none}
-    .sess-pill{flex-shrink:0;padding:9px 18px;background:var(--card2);border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text3);cursor:pointer;transition:all .2s;white-space:nowrap}
-    .sess-pill.active{background:var(--accent);color:#000;border-color:var(--accent)}
     .sh-eye{font-size:10px;font-weight:800;letter-spacing:.14em;color:var(--text3);text-transform:uppercase;margin-bottom:6px}
     .sh-title{font-size:26px;font-weight:900;text-transform:uppercase;letter-spacing:.02em;line-height:1}
     .sh-meta{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap;margin-bottom:16px}
@@ -118,7 +114,16 @@
     .block-head-left{display:flex;flex-direction:column;gap:2px}
     .block-name{font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
     .block-fmt{font-size:11px;color:var(--text3);font-weight:600}
-    .block-timer{font-size:22px;font-weight:900;color:var(--accent);letter-spacing:-.5px;flex-shrink:0}
+    .timer-wrap{display:flex;align-items:center;gap:5px;flex-shrink:0}
+    .timer-start{background:none;border:1.5px solid var(--accent);color:var(--accent);border-radius:20px;padding:5px 11px;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.02em;white-space:nowrap;transition:all .15s}
+    .timer-start:active{background:var(--accent);color:#000}
+    .timer-pre{font-size:30px;font-weight:900;color:var(--warn);letter-spacing:-.5px;min-width:28px;text-align:center;animation:tmr-pulse 1s ease-in-out infinite}
+    @keyframes tmr-pulse{0%,100%{opacity:1}50%{opacity:.3}}
+    .timer-count{font-size:20px;font-weight:900;color:var(--accent);letter-spacing:-.5px}
+    .timer-count.paused{color:var(--text3)}
+    .timer-done-lbl{font-size:11px;font-weight:800;color:var(--safe);letter-spacing:.07em;text-transform:uppercase}
+    .timer-btn{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px 5px;font-size:16px;line-height:1;transition:color .15s;flex-shrink:0}
+    .timer-btn:active{color:var(--text)}
     .ex-row{padding:12px 16px;display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
     .ex-row:last-child{border-bottom:none}
     .ex-row:active{background:var(--hover-bg)}
@@ -244,13 +249,9 @@
   </div>
   <div class="app-body">
   <nav class="top-nav">
-    <button class="nav-btn active" data-tab="week">
+    <button class="nav-btn active" data-tab="exercises">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      Week
-    </button>
-    <button class="nav-btn" data-tab="workout">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="12" x2="22" y2="12"/><rect x="6" y="9.5" width="12" height="5" rx="1.5"/><line x1="6" y1="8" x2="6" y2="10"/><line x1="18" y1="8" x2="18" y2="10"/><line x1="6" y1="14" x2="6" y2="16"/><line x1="18" y1="14" x2="18" y2="16"/></svg>
-      Workout
+      Exercises
     </button>
     <button class="nav-btn" data-tab="nutrition">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 3"/><circle cx="18" cy="5" r="3"/></svg>
@@ -263,8 +264,8 @@
   </nav>
   <div class="tab-content">
 
-    <!-- ══════════ WEEK ══════════ -->
-    <div id="tab-week" class="tab-panel active">
+    <!-- ══════════ EXERCISES ══════════ -->
+    <div id="tab-exercises" class="tab-panel active">
       <div class="week-title">Your <em>Week</em></div>
       <div class="week-sub" id="week-sub">Loading...</div>
       <div class="toggle-label">Strength sessions / week</div>
@@ -274,12 +275,6 @@
       </div>
       <div class="day-strip" id="day-strip"></div>
       <div id="day-detail"></div>
-    </div>
-
-    <!-- ══════════ WORKOUT ══════════ -->
-    <div id="tab-workout" class="tab-panel">
-      <div class="sess-row" id="sess-pills"></div>
-      <div id="workout-content"></div>
     </div>
 
     <!-- ══════════ NUTRITION ══════════ -->
@@ -602,9 +597,10 @@ const WALK_TIPS = [
 // STATE
 // ═══════════════════════════════════════════════════
 const state = {
-  tab:'week', sessCount:2, selDay:null,
+  tab:'exercises', sessCount:2, selDay:null,
   activeSession:0, expandedEx:null, expandedPrehab:null
 };
+const tmr = { key:null, phase:null, secs:0, total:0, iv:null };
 
 // ═══════════════════════════════════════════════════
 // WEEK TAB
@@ -656,23 +652,9 @@ function renderDayDetail() {
   const dayLbl = isToday ? 'Today' : abbr;
   if (day.type === 'strength') {
     const sess = SESSIONS[day.sid];
-    const mods = sess.blocks.reduce((n,b) => n + b.exercises.filter(e=>e.type==='modify').length, 0);
-    el.innerHTML = `<div class="day-detail s-detail">
-      <div class="dd-label">${dayLbl} · Strength Session</div>
-      <div class="dd-title">${sess.title}</div>
-      <div class="dd-chips">
-        ${mods>0?`<span class="dd-chip warn">⚠ ${mods} Knee Mod${mods>1?'s':''}</span>`:'<span class="dd-chip green">✓ All Moves Safe</span>'}
-        <span class="dd-chip blue">${sess.blocks.length} Blocks + Prehab</span>
-      </div>
-      <button class="view-btn" data-sid="${day.sid}">View Full Workout →</button>
-    </div>`;
-    el.querySelector('.view-btn').addEventListener('click', e => {
-      state.activeSession = parseInt(e.target.dataset.sid);
-      state.expandedEx = null;
-      switchTab('workout');
-      renderSessionPills();
-      renderWorkout();
-    });
+    if (state.activeSession !== day.sid) { state.activeSession = day.sid; state.expandedEx = null; state.expandedPrehab = null; }
+    el.innerHTML = buildWorkoutHtml(sess);
+    bindWorkoutEvents(el);
   } else if (day.type === 'walk') {
     el.innerHTML = `<div class="day-detail w-detail">
       <div class="dd-label">${dayLbl} · Active Recovery</div>
@@ -691,23 +673,61 @@ function renderDayDetail() {
 }
 
 // ═══════════════════════════════════════════════════
-// WORKOUT TAB
+// TIMER
 // ═══════════════════════════════════════════════════
-function renderSessionPills() {
-  document.getElementById('sess-pills').innerHTML = SESSIONS.map(s =>
-    `<button class="sess-pill${s.id===state.activeSession?' active':''}" data-sid="${s.id}">${s.label}</button>`
-  ).join('');
-  document.querySelectorAll('.sess-pill').forEach(btn => {
-    btn.addEventListener('click', () => {
-      state.activeSession = parseInt(btn.dataset.sid);
-      state.expandedEx = null;
-      renderSessionPills();
-      renderWorkout();
-    });
-  });
+function fmtTime(s) { return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; }
+
+function timerHtml(key, total) {
+  if (tmr.key !== key || !tmr.phase)
+    return `<button class="timer-start" data-ta="start" data-key="${key}" data-total="${total}">${fmtTime(total)}</button>`;
+  if (tmr.phase === 'pre')
+    return `<div class="timer-pre">${tmr.secs}</div>`;
+  if (tmr.phase === 'done')
+    return `<span class="timer-done-lbl">Done</span><button class="timer-btn" data-ta="stop" data-key="${key}" data-total="${total}">↺</button>`;
+  const paused = tmr.phase === 'paused';
+  return `<span class="timer-count${paused?' paused':''}">${fmtTime(tmr.secs)}</span>`
+    + `<button class="timer-btn" data-ta="pause">${paused?'▶':'⏸'}</button>`
+    + `<button class="timer-btn" data-ta="stop" data-key="${key}" data-total="${total}">↺</button>`;
 }
-function renderWorkout() {
-  const sess = SESSIONS[state.activeSession];
+
+function refreshTmrEl() {
+  if (!tmr.key) return;
+  const el = document.getElementById('t-' + tmr.key);
+  if (el) el.innerHTML = timerHtml(tmr.key, tmr.total);
+}
+
+function startTimer(key, total) {
+  if (tmr.iv) clearInterval(tmr.iv);
+  tmr.key = key; tmr.total = total; tmr.phase = 'pre'; tmr.secs = 5;
+  refreshTmrEl();
+  tmr.iv = setInterval(() => {
+    if (tmr.phase === 'pre') { tmr.secs--; if (tmr.secs <= 0) { tmr.phase = 'live'; tmr.secs = tmr.total; } }
+    else { tmr.secs--; if (tmr.secs <= 0) { tmr.phase = 'done'; clearInterval(tmr.iv); tmr.iv = null; } }
+    refreshTmrEl();
+  }, 1000);
+}
+
+function pauseTimer() {
+  if (tmr.phase === 'live') {
+    clearInterval(tmr.iv); tmr.iv = null; tmr.phase = 'paused'; refreshTmrEl();
+  } else if (tmr.phase === 'paused') {
+    tmr.phase = 'live';
+    tmr.iv = setInterval(() => { tmr.secs--; if (tmr.secs <= 0) { tmr.phase = 'done'; clearInterval(tmr.iv); tmr.iv = null; } refreshTmrEl(); }, 1000);
+    refreshTmrEl();
+  }
+}
+
+function stopTimer(key, total) {
+  if (tmr.iv) { clearInterval(tmr.iv); tmr.iv = null; }
+  tmr.key = null; tmr.phase = null;
+  const el = document.getElementById('t-' + key);
+  if (el) el.innerHTML = timerHtml(key, total);
+}
+
+// ═══════════════════════════════════════════════════
+// WORKOUT RENDERING
+// ═══════════════════════════════════════════════════
+function buildWorkoutHtml(sess) {
   const mods = sess.blocks.reduce((n,b) => n + b.exercises.filter(e=>e.type==='modify').length, 0);
   let html = `<div class="sh-eye">${sess.date}</div>
     <div class="sh-title">${sess.title}</div>
@@ -715,8 +735,10 @@ function renderWorkout() {
       ${mods>0?`<span class="sh-tag mods">⚠ ${mods} Knee Mod${mods>1?'s':''}</span>`:''}
       <span class="sh-tag ok">Tap any exercise for how-to</span>
     </div>`;
-  sess.blocks.forEach(block => {
-    html += `<div class="block-card"><div class="block-head"><div class="block-head-left"><span class="block-name">${block.name}</span><span class="block-fmt">${block.fmt}</span></div><span class="block-timer">${block.mins}:00</span></div>`;
+  sess.blocks.forEach((block, bi) => {
+    const bk = `${sess.id}-${bi}`;
+    const tot = block.mins * 60;
+    html += `<div class="block-card"><div class="block-head"><div class="block-head-left"><span class="block-name">${block.name}</span><span class="block-fmt">${block.fmt}</span></div><div class="timer-wrap" id="t-${bk}">${timerHtml(bk, tot)}</div></div>`;
     block.exercises.forEach((ex, i) => {
       const key = `${sess.id}-${block.name}-${i}`;
       const open = state.expandedEx === key;
@@ -738,7 +760,6 @@ function renderWorkout() {
     });
     html += `</div>`;
   });
-  // Prehab
   html += `<div class="prehab-card"><div class="prehab-head"><div class="prehab-name">${PREHAB.name}</div><div class="prehab-fmt">${PREHAB.fmt}</div></div><div class="prehab-note">${PREHAB.note}</div>`;
   PREHAB.exercises.forEach((ex,i) => {
     const pk = `prehab-${i}`;
@@ -753,19 +774,20 @@ function renderWorkout() {
     </div>`;
   });
   html += `</div><div style="height:10px"></div>`;
-  document.getElementById('workout-content').innerHTML = html;
-  document.querySelectorAll('.ex-row').forEach(row => {
+  return html;
+}
+
+function bindWorkoutEvents(container) {
+  container.querySelectorAll('.ex-row').forEach(row => {
     row.addEventListener('click', () => {
-      const k = row.dataset.key;
-      state.expandedEx = state.expandedEx === k ? null : k;
-      renderWorkout();
+      state.expandedEx = state.expandedEx === row.dataset.key ? null : row.dataset.key;
+      renderDayDetail();
     });
   });
-  document.querySelectorAll('.prehab-ex').forEach(el => {
+  container.querySelectorAll('.prehab-ex').forEach(el => {
     el.addEventListener('click', () => {
-      const pk = el.dataset.pk;
-      state.expandedPrehab = state.expandedPrehab === pk ? null : pk;
-      renderWorkout();
+      state.expandedPrehab = state.expandedPrehab === el.dataset.pk ? null : el.dataset.pk;
+      renderDayDetail();
     });
   });
 }
@@ -793,6 +815,14 @@ function switchTab(tab) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id===`tab-${tab}`));
 }
 document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+document.getElementById('day-detail').addEventListener('click', e => {
+  const btn = e.target.closest('[data-ta]');
+  if (!btn) return;
+  const a = btn.dataset.ta;
+  if (a === 'start') startTimer(btn.dataset.key, parseInt(btn.dataset.total));
+  else if (a === 'pause') pauseTimer();
+  else if (a === 'stop') stopTimer(btn.dataset.key, parseInt(btn.dataset.total));
+});
 document.querySelectorAll('#sess-toggle .tog-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     state.sessCount = parseInt(btn.dataset.n);
@@ -828,8 +858,6 @@ document.querySelectorAll('#sess-toggle .tog-btn').forEach(btn => {
 renderWeek();
 state.selDay = getTodayIdx();
 renderWeek();
-renderSessionPills();
-renderWorkout();
 initNutrition();
 </script>
 </body>
