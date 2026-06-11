@@ -103,6 +103,8 @@
     .walk-tip{padding:10px 0;border-bottom:1px solid var(--border)}
     .walk-tip:last-child{border-bottom:none;padding-bottom:0}
     .wt-icon{display:none}
+    .wt-section-hd{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+    .wt-section-hd::before{content:'';display:inline-block;width:3px;height:12px;background:var(--green);border-radius:2px;flex-shrink:0}
     .wt-label{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
     .wt-desc{font-size:13px;color:var(--text2);line-height:1.45}
 
@@ -614,12 +616,20 @@ const WEEK_LAYOUTS = {
 };
 const DAY_ABBRS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
 const WALK_TIPS = [
-  { icon:'⏱', label:'Duration', desc:'20–30 minutes. Start shorter if the knee is flared; build up by 5 minutes each week.' },
-  { icon:'🚶', label:'Pace', desc:'Conversational — you should be able to talk comfortably. This is recovery, not a workout.' },
-  { icon:'🏞', label:'Terrain', desc:'Flat pavement or treadmill preferred. Avoid hills, stairs, or uneven ground until symptoms are stable.' },
-  { icon:'👟', label:'Footwear', desc:'Supportive, cushioned shoes. Good footwear absorbs impact before it reaches the knee.' },
-  { icon:'☀️', label:'Sunlight bonus', desc:'15–20 minutes of daylight exposure supports natural Vitamin D synthesis — pair it with your walk.' },
-  { icon:'🔴', label:'Stop if', desc:'Knee pain rises above 3/10, swelling increases, or the knee feels hot after the walk.' }
+  { label:'Duration', desc:'20–30 minutes. Start shorter if the knee is flared; build up by 5 minutes each week.' },
+  { label:'Pace', desc:'Conversational — you should be able to talk comfortably. This is recovery, not a workout.' },
+  { label:'Terrain', desc:'Flat pavement or treadmill preferred. Avoid hills, stairs, or uneven ground until symptoms are stable.' },
+  { label:'Footwear', desc:'Supportive, cushioned shoes. Good footwear absorbs impact before it reaches the knee.' },
+  { label:'Sunlight bonus', desc:'15–20 minutes of daylight exposure supports natural Vitamin D synthesis — pair it with your walk.' },
+  { label:'Stop if', desc:'Knee pain rises above 3/10, swelling increases, or the knee feels hot after the walk.' }
+];
+const BIKE_TIPS = [
+  { label:'Seat height', desc:'Raise the seat so your knee has only a slight bend at the very bottom of the pedal stroke. This is the single most important setting — a low seat forces deep knee flexion directly onto the lateral patella defect.' },
+  { label:'Duration', desc:'20–30 minutes at a comfortable, conversational effort. Longer is fine if the knee stays quiet.' },
+  { label:'Resistance', desc:'Keep it light. Aim for 80–90 RPM at low resistance — spin, don\'t grind. High resistance increases patellofemoral compression.' },
+  { label:'Seated only', desc:'Stay seated throughout — no standing climbs or sprints. Standing on the bike forces the knee into flexion angles that load the defect.' },
+  { label:'Best days to bike', desc:'Prefer the bike over walking on days when the knee is puffy, achy, or the weather is bad. It\'s equally effective for joint recovery with less impact.' },
+  { label:'Stop if', desc:'Deep aching or pinching around the outer kneecap — that\'s the lateral defect responding to too much compression. Drop the resistance or raise the seat further.' }
 ];
 
 // ═══════════════════════════════════════════════════
@@ -695,10 +705,17 @@ function renderDayDetail() {
     el.innerHTML = `<div class="day-detail w-detail">
       <div class="dd-label">${dayLbl} · Active Recovery</div>
       <div class="dd-title">Walk or Bike Day</div>
-      <div class="dd-desc">Low-impact movement keeps blood flowing to the joint and supports healing without stressing the cartilage. Walk on flat terrain or use a stationary bike with the seat raised high.</div>
-      <div class="dd-chips"><span class="dd-chip green">20–30 min</span><span class="dd-chip green">Flat terrain</span><span class="dd-chip green">Easy pace</span></div>
+      <div class="dd-desc">Low-impact movement keeps blood flowing to the joint and supports healing without stressing the cartilage. Choose whichever feels better on your knee today.</div>
+      <div class="dd-chips"><span class="dd-chip green">20–30 min</span><span class="dd-chip green">Easy effort</span><span class="dd-chip green">Pain-free only</span></div>
     </div>
-    <div class="card">${WALK_TIPS.map(t=>`<div class="walk-tip"><div class="wt-label">${t.label}</div><div class="wt-desc">${t.desc}</div></div>`).join('')}</div>`;
+    <div class="card">
+      <div class="wt-section-hd">Walking</div>
+      ${WALK_TIPS.map(t=>`<div class="walk-tip"><div class="wt-label">${t.label}</div><div class="wt-desc">${t.desc}</div></div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="wt-section-hd">Stationary Bike</div>
+      ${BIKE_TIPS.map(t=>`<div class="walk-tip"><div class="wt-label">${t.label}</div><div class="wt-desc">${t.desc}</div></div>`).join('')}
+    </div>`;
   } else {
     el.innerHTML = `<div class="day-detail r-detail">
       <div class="dd-label">${dayLbl}</div>
