@@ -661,7 +661,7 @@ function renderWeek() {
   let html = '';
   layout.forEach((day, i) => {
     const icon = day.type === 'strength' ? '💪' : day.type === 'walk' ? '🚶' : '😴';
-    const lbl = day.type === 'strength' ? SESSIONS[day.sid].label : day.type === 'walk' ? 'Walk' : 'Rest';
+    const lbl = day.type === 'strength' ? SESSIONS[day.sid].label : day.type === 'walk' ? 'Walk / Bike' : 'Rest';
     html += `<div class="day-cell ${day.type}${i===todayIdx?' today':''}${i===state.selDay?' sel':''}" data-i="${i}">
       <span class="day-abbr">${DAY_ABBRS[i]}</span>
       <span class="day-icon">${icon}</span>
@@ -694,8 +694,8 @@ function renderDayDetail() {
   } else if (day.type === 'walk') {
     el.innerHTML = `<div class="day-detail w-detail">
       <div class="dd-label">${dayLbl} · Active Recovery</div>
-      <div class="dd-title">Walk Day</div>
-      <div class="dd-desc">Low-impact movement keeps blood flowing to the joint and supports healing without stressing the cartilage.</div>
+      <div class="dd-title">Walk or Bike Day</div>
+      <div class="dd-desc">Low-impact movement keeps blood flowing to the joint and supports healing without stressing the cartilage. Walk on flat terrain or use a stationary bike with the seat raised high.</div>
       <div class="dd-chips"><span class="dd-chip green">20–30 min</span><span class="dd-chip green">Flat terrain</span><span class="dd-chip green">Easy pace</span></div>
     </div>
     <div class="card">${WALK_TIPS.map(t=>`<div class="walk-tip"><div class="wt-label">${t.label}</div><div class="wt-desc">${t.desc}</div></div>`).join('')}</div>`;
