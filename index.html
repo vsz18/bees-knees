@@ -66,7 +66,10 @@
     /* ── WEEK ── */
     .week-title{font-size:28px;font-weight:900;line-height:1.1;margin-bottom:4px}
     .week-title em{color:var(--accent);font-style:normal}
-    .week-sub{color:var(--text2);font-size:14px;margin-bottom:20px}
+    .week-nav{display:flex;align-items:center;gap:8px;margin-bottom:20px}
+    .week-sub{color:var(--text2);font-size:14px;flex:1}
+    .week-nav-btn{background:var(--card);border:1px solid var(--border);color:var(--text3);font-size:15px;width:30px;height:30px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:color .15s,border-color .15s}
+    .week-nav-btn:hover{color:var(--text);border-color:var(--border2)}
     .day-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:16px}
     .day-cell{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:14px;cursor:pointer;border:1px solid transparent;transition:all .2s;position:relative}
     .day-cell:active{opacity:.7}
@@ -280,7 +283,11 @@
     <!-- ══════════ EXERCISES ══════════ -->
     <div id="tab-exercises" class="tab-panel active">
       <div class="week-title" id="week-title">Loading</div>
-      <div class="week-sub" id="week-sub">Loading...</div>
+      <div class="week-nav">
+        <button class="week-nav-btn" id="week-prev">&#8249;</button>
+        <div class="week-sub" id="week-sub">Loading...</div>
+        <button class="week-nav-btn" id="week-next">&#8250;</button>
+      </div>
       <div class="toggle-label">Strength sessions / week</div>
       <div class="toggle-row" id="sess-toggle">
         <button class="tog-btn active" data-n="2">2 sessions</button>
@@ -622,7 +629,8 @@ const BIKE_TIPS = [
 // ═══════════════════════════════════════════════════
 const state = {
   tab:'exercises', sessCount:2, selDay:null,
-  activeSession:0, expandedEx:null, expandedPrehab:null
+  activeSession:0, expandedEx:null, expandedPrehab:null,
+  weekOffset:0
 };
 const tmr = { key:null, phase:null, secs:0, total:0, iv:null };
 
@@ -633,7 +641,7 @@ function getWeekRange() {
   const today = new Date();
   const dow = today.getDay();
   const diffToMon = dow === 0 ? -6 : 1 - dow;
-  const mon = new Date(today); mon.setDate(today.getDate() + diffToMon);
+  const mon = new Date(today); mon.setDate(today.getDate() + diffToMon + state.weekOffset * 7);
   const sun = new Date(mon); sun.setDate(mon.getDate() + 6);
   const f = d => d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
   return `Week of ${f(mon)} – ${f(sun)}`;
@@ -648,8 +656,13 @@ function getTodayLabel() {
 }
 function renderWeek() {
   const titleEl = document.getElementById('week-title');
-  const [weekday, ...rest] = getTodayLabel().split(', ');
-  titleEl.innerHTML = `${weekday}, <em>${rest.join(', ')}</em>`;
+  if (state.weekOffset === 0) {
+    const [weekday, ...rest] = getTodayLabel().split(', ');
+    titleEl.innerHTML = `${weekday}, <em>${rest.join(', ')}</em>`;
+  } else {
+    const label = state.weekOffset === 1 ? 'Next week' : state.weekOffset === -1 ? 'Last week' : state.weekOffset > 0 ? `${state.weekOffset} weeks ahead` : `${Math.abs(state.weekOffset)} weeks ago`;
+    titleEl.innerHTML = label;
+  }
   document.getElementById('week-sub').textContent = getWeekRange();
   const layout = WEEK_LAYOUTS[state.sessCount];
   const todayIdx = getTodayIdx();
@@ -657,7 +670,8 @@ function renderWeek() {
   layout.forEach((day, i) => {
     const icon = day.type === 'strength' ? '💪' : day.type === 'walk' ? '🚶' : '😴';
     const lbl = day.type === 'strength' ? SESSIONS[day.sid].label : day.type === 'walk' ? 'Walk / Bike' : 'Rest';
-    html += `<div class="day-cell ${day.type}${i===todayIdx?' today':''}${i===state.selDay?' sel':''}" data-i="${i}">
+    const isToday = state.weekOffset === 0 && i === todayIdx;
+    html += `<div class="day-cell ${day.type}${isToday?' today':''}${i===state.selDay?' sel':''}" data-i="${i}">
       <span class="day-abbr">${DAY_ABBRS[i]}</span>
       <span class="day-icon">${icon}</span>
       <span class="day-type">${lbl}</span>
@@ -871,6 +885,13 @@ document.querySelectorAll('#sess-toggle .tog-btn').forEach(btn => {
     btn.classList.add('active');
     renderWeek();
   });
+});
+
+document.getElementById('week-prev').addEventListener('click', () => {
+  state.weekOffset--; state.selDay = null; renderWeek();
+});
+document.getElementById('week-next').addEventListener('click', () => {
+  state.weekOffset++; state.selDay = null; renderWeek();
 });
 
 // ═══════════════════════════════════════════════════
