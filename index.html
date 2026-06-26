@@ -211,6 +211,16 @@
     .stat-n{font-size:22px;font-weight:900;color:var(--accent);line-height:1}
     .stat-l{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:4px;font-weight:700}
 
+    /* ── SURGERY COUNTDOWN ── */
+    .surgery-banner{background:linear-gradient(135deg,rgba(255,112,67,.08),rgba(255,112,67,.03));border:1px solid var(--accent-border);border-radius:20px;padding:18px 20px;margin-bottom:20px}
+    .surgery-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px}
+    .surgery-count{font-size:44px;font-weight:900;color:var(--accent);line-height:1;letter-spacing:-.03em}
+    .surgery-count-unit{font-size:13px;font-weight:700;color:var(--accent);opacity:.7;letter-spacing:.04em;text-transform:uppercase;margin-left:4px}
+    .surgery-label{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--text3)}
+    .surgery-date{font-size:12px;font-weight:700;color:var(--text3);white-space:nowrap}
+    .surgery-quote{font-size:13px;color:var(--text2);line-height:1.6;font-style:italic;border-left:3px solid var(--accent-border);padding-left:12px;margin-top:2px}
+    .surgery-motto{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-top:10px}
+
     /* RULES / TIMELINE */
     .proc-card{background:linear-gradient(135deg,var(--warn-dim),transparent);border:1px solid var(--warn-border);border-radius:18px;padding:18px;margin-bottom:12px;box-shadow:var(--card-shadow)}
     .proc-lbl{font-size:10px;font-weight:800;letter-spacing:.14em;color:var(--warn);text-transform:uppercase;margin-bottom:8px}
@@ -282,6 +292,7 @@
 
     <!-- ══════════ EXERCISES ══════════ -->
     <div id="tab-exercises" class="tab-panel active">
+      <div class="surgery-banner" id="surgery-banner"></div>
       <div class="week-title" id="week-title">Loading</div>
       <div class="week-nav">
         <button class="week-nav-btn" id="week-prev">&#8249;</button>
@@ -345,6 +356,14 @@
         </div>
       </div>
       </div><!-- end food-cats-grid -->
+      <div class="section-label">Supplements</div>
+      <div class="food-cat" id="fc-vitamins">
+        <div class="fc-head"><div class="fc-badge">Rx</div><div class="fc-main"><div class="fc-name">Collagen Peptide + Vitamin C</div><div class="fc-tag">Check with your doctor first</div></div><div class="fc-arrow">›</div></div>
+        <div class="fc-body">
+          <div class="fc-why">Collagen peptides provide the amino acids (glycine, proline, hydroxyproline) your body uses to rebuild cartilage and connective tissue. Vitamin C is required to convert those amino acids into functional collagen — the two work together and should be taken at the same time. Taking collagen without Vitamin C significantly reduces its effectiveness. Always confirm with your doctor before adding any supplement, especially pre-procedure.</div>
+          <div class="fc-chips"><span class="fc-chip">Collagen peptide powder</span><span class="fc-chip">Take with Vitamin C source</span><span class="fc-chip">Morning or post-workout</span></div>
+        </div>
+      </div>
       <div style="height:10px"></div>
     </div>
 
@@ -483,7 +502,7 @@ const SESSIONS = [
             note: 'You are resting your knee on the floor for the down-knee side. Use a pad or mat under the knee for comfort. If the down knee is your injured knee and it is sore or swollen, do this standing instead — the movement is identical from a standing split stance.' }
         ]
       },
-      { name: 'BLOCK B', fmt: 'As Many Rounds As Possible', mins: 12,
+      { name: 'BLOCK B', fmt: 'As Many Rounds As Possible', mins: 10,
         exercises: [
           { name: 'Towel Kettlebell Curl', reps: '10', type: 'safe',
             howTo: 'Thread a towel through the handle of a kettlebell and hold one end of the towel in each hand. Curl the weight up by flexing your elbows, keeping your upper arms pinned to your sides. Lower slowly over 2–3 seconds. The towel changes the grip angle and challenges your forearm and hand strength alongside the bicep.' },
@@ -494,7 +513,7 @@ const SESSIONS = [
             note: 'Same knee note as the HK press — use a pad under the down knee. If the injured knee is your down knee, do this in a standing split stance instead.' }
         ]
       },
-      { name: 'BLOCK C', fmt: '3–4 rounds, rest 30–40 seconds', mins: 12,
+      { name: 'BLOCK C', fmt: '3–4 rounds, rest 30–40 seconds', mins: 10,
         exercises: [
           { name: 'Pull-Up', reps: '5', type: 'safe',
             howTo: 'Hang from the bar with a grip slightly wider than shoulder width, palms facing away. Pull yourself up until your chin clears the bar, keeping your core tight and avoiding excessive kipping. Lower with full control — do not drop from the top. Use a band for assistance if needed to maintain the full range of motion and controlled tempo.' },
@@ -504,7 +523,7 @@ const SESSIONS = [
             howTo: 'Lie on your back with both arms pointing straight up to the ceiling and both knees bent at 90 degrees, shins parallel to the floor. Press your lower back firmly into the floor and keep it there for the entire set. Slowly lower one arm overhead while simultaneously extending the opposite leg toward the floor. Return and switch. If your lower back lifts off the floor at any point, the range is too large — shorten it.' }
         ]
       },
-      { name: 'CONDITIONING', fmt: 'For time — split all reps with your partner, sustainable pace', mins: 15,
+      { name: 'CONDITIONING', fmt: 'For time — split all reps with your partner, sustainable pace', mins: 10,
         exercises: [
           { name: 'Rowing Machine', reps: '80 calories total', type: 'safe',
             howTo: 'Drive with your legs first, then lean back slightly, then pull the handle to your lower ribs. Return in the reverse order. Split the calories with your partner in chunks that let you hold a steady, controlled pace — this is not a sprint, this is a sustainable effort. The rowing motion keeps your knee in a comfortable, safe range of motion.' },
@@ -519,30 +538,34 @@ const SESSIONS = [
     id: 1, label: 'LOWER', title: 'SQUAD — LOWER', date: 'JUNE 25/26',
     intent: 'Stay sharp, don\'t accumulate fatigue.',
     blocks: [
-      { name: 'BLOCK A', fmt: 'Lower RPE — 4–5 sets, leave reps in the tank', mins: 20,
+      { name: 'BLOCK A', fmt: '3–4 rounds', mins: 10,
         exercises: [
-          { name: 'Back Squat', reps: '5', type: 'modify',
-            howTo: 'Bar on your back, feet shoulder-width apart with toes turned out 20–30 degrees. Brace your core, hinge your hips back, and lower with control.',
-            mod: 'Stop at approximately 60° of knee bend — roughly quarter-squat depth, well above parallel. This keeps the lateral patella defect unloaded. At any pinching or grinding around the outer kneecap, reduce depth further or substitute a Goblet Squat to the same limited range. Lower RPE means this should feel like a 6 out of 10 effort at most — do not push depth or load this week.' },
-          { name: 'Barbell Reverse Lunge (flat floor)', reps: '5 each side', type: 'modify',
-            howTo: 'Bar on your back or dumbbells at your sides. Step backward with one foot, lowering your back knee toward — but not touching — the floor. Push through your front heel to return to standing.',
-            mod: 'Flat floor only. Step back far enough to keep your front shin as vertical as possible. Front knee stays at 70° max — do not hit parallel. Take 2–3 seconds on the descent. The lateral defect means deeper flexion puts direct pressure on the damaged cartilage. Lower RPE this week — keep weight conservative.' }
+          { name: 'Glute Bridge', reps: '4 × 15', type: 'safe',
+            howTo: 'Lie on your back with knees bent and feet flat on the floor, roughly hip-width apart. Drive your hips up by squeezing your glutes, not by pushing through your quads. Pause at the top for 2 seconds, squeezing as hard as possible. Lower with control. To add load, place a barbell or dumbbell across your hips.' },
+          { name: 'Sumo Squat (shallow)', reps: '10', type: 'modify',
+            howTo: 'Take a wide stance with toes turned out significantly. Hold a kettlebell or dumbbell at your chest for counterbalance. Lower down with control, keeping your chest tall and knees tracking over your toes.',
+            mod: 'Shallow only — stop at approximately 60° of knee bend, well above parallel. The wide stance reduces the range the knee needs to travel to reach depth. At any pinching or lateral kneecap grinding, reduce depth further or substitute a standing hip abduction with a band instead.' },
+          { name: 'B-Stance RDL', reps: '3 × 8 each side', type: 'safe',
+            howTo: 'Hold a dumbbell or kettlebell in each hand. Stagger your feet so one foot is slightly behind the other, toes of the back foot lightly touching the floor for balance only — roughly 80–90% of your weight stays on the front leg. Hinge at the hip, pushing it back, and lower the weights along the front leg with a flat back. Feel the hamstring of the front leg load up. Drive through the front heel to return. Switch sides after all reps.' }
         ]
       },
-      { name: 'BLOCK B', fmt: '3 rounds — unilateral, controlled pace', mins: 12,
+      { name: 'BLOCK B', fmt: '4 sets', mins: 10,
         exercises: [
-          { name: 'Single-Leg Romanian Deadlift', reps: '8 each side', type: 'safe',
-            howTo: 'Stand on one leg. Hinge at the hip, reaching your opposite hand toward the floor while the free leg extends behind you for counterbalance. Return to standing with control. The standing knee stays soft throughout — never locked. This is a balance and hamstring exercise; keep it slow and deliberate.' },
-          { name: 'Dumbbell Frog Pump', reps: '20', type: 'safe',
-            howTo: 'Lie on your back and place a dumbbell across your hips (hold it in place with both hands). Bring the soles of your feet together in a diamond/frog shape. Drive your hips up toward the ceiling, squeezing your glutes as hard as possible at the top. Lower with control. This position pre-stretches the glutes for a stronger contraction and puts zero load on the knee.' },
-          { name: 'Single-Arm Kettlebell Suitcase March', reps: '12 each side', type: 'safe',
-            howTo: 'Hold a heavy kettlebell in one hand at your side, like a suitcase. March in place bringing your knees to hip height. Resist the urge to lean toward the weight — stay completely upright. The challenge is core and hip stability, not just carrying the load. Switch hands for the second side.' }
+          { name: 'Straight Leg Raise (SLR)', reps: '4 × 12 each side', type: 'safe',
+            howTo: 'Lie on your back with your non-working leg bent and foot flat on the floor. Lock the working knee 100% straight — squeeze your quad as hard as possible before the leg leaves the floor and keep that tension throughout the entire rep. Flex your foot back toward your shin. Lift the leg to about 12 inches off the floor, pause one second, then lower with control. The quad contraction must come first — if the knee softens at all, reset before the next rep.' },
+          { name: 'Backward Treadmill Walking', reps: '10 minutes', type: 'safe',
+            howTo: 'Machine OFF — do not turn the treadmill on. Stand facing away from the console and hold the side rails lightly for balance. Push the belt backward manually with the balls of your feet and toes. Walk at a slow, controlled pace. This recruits the quad eccentrically and loads the VMO with zero patellofemoral compression. Keep your torso upright and steps deliberate — do not lean heavily on the rails.' }
         ]
       },
-      { name: 'CONDITIONING', fmt: 'Sprint intervals — Every 3:00 × 5 rounds (1 min work, 2 min rest)', mins: 15,
+      { name: 'BLOCK C', fmt: 'As Many Rounds As Possible', mins: 10,
         exercises: [
-          { name: 'Assault Bike or Rowing Machine', reps: '20 calories', type: 'safe',
-            howTo: 'Pick one machine for all 5 rounds or alternate if you prefer. Assault bike: set the seat high so your knee has only a slight bend at the very bottom of the pedal stroke. Row: legs, lean, pull — smooth and connected. Sprint hard for your work interval, then rest fully for the remaining 2 minutes. Real effort followed by real rest — do not pace this into a medium-effort grind.' }
+          { name: 'Low Box Step-Up', reps: '6 each side', type: 'modify',
+            howTo: 'Stand in front of a low box (6–10 inches). Step up with one foot, press through that heel to bring the other foot up. Step back down one foot at a time.',
+            mod: 'Low box only — this keeps the working knee well under 60° of bend, which is exactly the safe range for your lateral patella defect. Take 3 full seconds on the step-down. The slow eccentric is the valuable part. No jumping on or off.' },
+          { name: 'Dead Bug', reps: '6 each side', type: 'safe',
+            howTo: 'Lie on your back with both arms pointing straight up to the ceiling and both knees bent at 90 degrees, shins parallel to the floor. Press your lower back firmly into the floor and keep it there for the entire set. Slowly lower one arm overhead while simultaneously extending the opposite leg toward the floor. Return and switch. If your lower back lifts off the floor at any point, the range is too large — shorten it.' },
+          { name: 'Hanging Knee Raise', reps: '10', type: 'safe',
+            howTo: 'Hang from a pull-up bar with a comfortable grip. Brace your core and draw your knees up toward your chest in a controlled arc. Avoid swinging — initiate from the abs, not momentum. Lower your legs with control. The knee joint is not loaded at all in this movement.' }
         ]
       }
     ]
@@ -914,8 +937,31 @@ document.getElementById('week-next').addEventListener('click', () => {
 })();
 
 // ═══════════════════════════════════════════════════
+// SURGERY COUNTDOWN
+// ═══════════════════════════════════════════════════
+function renderSurgeryBanner() {
+  const surgery = new Date('2026-07-20T00:00:00');
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const days = Math.round((surgery - today) / 86400000);
+  const el = document.getElementById('surgery-banner');
+  if (!el) return;
+  if (days < 0) { el.style.display = 'none'; return; }
+  const dayWord = days === 1 ? 'day' : 'days';
+  el.innerHTML = `
+    <div class="surgery-label">Comeback countdown</div>
+    <div class="surgery-top">
+      <div><span class="surgery-count">${days}</span><span class="surgery-count-unit">${dayWord}</span></div>
+      <div class="surgery-date">July 20, 2026</div>
+    </div>
+    <div class="surgery-quote">Returning to a weekly running volume with full-thickness patellar cartilage loss is an uphill battle, but it is mechanically possible if you approach your training like an engineer.</div>
+    <div class="surgery-motto">Every session now is a rep toward the comeback.</div>`;
+}
+
+// ═══════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════
+renderSurgeryBanner();
 renderWeek();
 state.selDay = getTodayIdx();
 renderWeek();
