@@ -493,43 +493,28 @@ const SESSIONS = [
     id: 0, label: 'UPPER', title: 'SQUAD — UPPER', date: 'JUNE 23/24',
     intent: 'Move well, recover smart.',
     blocks: [
-      { name: 'BLOCK A', fmt: 'Every 2:30 × 4 sets', mins: 10,
+      { name: 'BLOCK A', fmt: '3–4 rounds', mins: 10,
         exercises: [
-          { name: 'Landmine Row', reps: '10', type: 'safe',
-            howTo: 'Anchor one end of a barbell in a landmine attachment or corner. Stand perpendicular to the bar, hinge at the hips with a flat back, and grip the sleeve with one hand. Drive your elbow back and up, rowing the bar toward your hip. Squeeze your shoulder blade hard at the top, then lower with full control. The fixed arc of the landmine keeps the movement groove consistent and takes stress off the lower back compared to a free-weight row.' },
-          { name: 'Half-Kneeling Dumbbell Overhead Press', reps: '6 each side', type: 'note',
-            howTo: 'Kneel on one knee with the opposite foot forward, both at 90 degrees. Hold a dumbbell in the hand on the same side as the down knee. Brace your core and glutes, then press the dumbbell straight overhead to full lockout. Lower with control. The half-kneeling position removes the lower body from the equation and forces your core to work hard to prevent side-bending.',
-            note: 'You are resting your knee on the floor for the down-knee side. Use a pad or mat under the knee for comfort. If the down knee is your injured knee and it is sore or swollen, do this standing instead — the movement is identical from a standing split stance.' }
+          { name: 'Pushups', reps: '10', type: 'safe',
+            howTo: 'Start in a high plank with hands slightly wider than shoulder-width, body in a straight line from head to heels. Lower your chest to the floor with control, keeping your elbows at roughly 45 degrees from your torso — not flared wide. Press back to full lockout. Brace your core the entire time so your hips do not sag or pike. Scale to an incline if needed.' },
+          { name: 'The Hundred', reps: '100 pulses', type: 'safe',
+            howTo: 'Lie on your back and curl your head, neck, and shoulders off the floor. Lift your legs to a 45-degree angle (lower = harder; raise them higher if your back lifts off). Extend your arms long at your sides a few inches off the floor. Pump your arms up and down in small, sharp pulses — inhale for 5 pulses, exhale for 5 pulses. That is one set of 10. Complete 10 sets for 100 total pulses. Keep your lower back pressed into the floor throughout.' }
         ]
       },
-      { name: 'BLOCK B', fmt: 'As Many Rounds As Possible', mins: 10,
+      { name: 'BLOCK B', fmt: '3–4 rounds', mins: 10,
         exercises: [
-          { name: 'Towel Kettlebell Curl', reps: '10', type: 'safe',
-            howTo: 'Thread a towel through the handle of a kettlebell and hold one end of the towel in each hand. Curl the weight up by flexing your elbows, keeping your upper arms pinned to your sides. Lower slowly over 2–3 seconds. The towel changes the grip angle and challenges your forearm and hand strength alongside the bicep.' },
-          { name: 'Banded Overhead Hold', reps: '30 seconds', type: 'safe',
-            howTo: 'Anchor a resistance band at chest height. Face away from the anchor, grab the band with both hands, and press it overhead to full arm extension. Hold that position for the full duration, resisting the band pulling your arms forward and down. Keep your ribs down and core braced — do not let your lower back arch.' },
-          { name: 'Half-Kneeling Woodchop', reps: '8 each side', type: 'note',
-            howTo: 'Set a cable or anchor a band at low or high position depending on which direction you are chopping. Kneel on one knee facing perpendicular to the anchor. Grip the handle with both hands and rotate your torso, pulling the cable diagonally across your body — low-to-high or high-to-low. Keep hips square and let only your torso rotate. Control the return.',
-            note: 'Same knee note as the HK press — use a pad under the down knee. If the injured knee is your down knee, do this in a standing split stance instead.' }
-        ]
-      },
-      { name: 'BLOCK C', fmt: '3–4 rounds, rest 30–40 seconds', mins: 10,
-        exercises: [
-          { name: 'Pull-Up', reps: '5', type: 'safe',
-            howTo: 'Hang from the bar with a grip slightly wider than shoulder width, palms facing away. Pull yourself up until your chin clears the bar, keeping your core tight and avoiding excessive kipping. Lower with full control — do not drop from the top. Use a band for assistance if needed to maintain the full range of motion and controlled tempo.' },
-          { name: 'Dumbbell Floor Press', reps: '8', type: 'safe',
-            howTo: 'Lie on your back on the floor, knees bent, feet flat. Hold a dumbbell in each hand at chest height with palms facing each other or forward. Press both dumbbells to full arm lockout, then lower until your triceps touch the floor — pause briefly before the next rep. The floor limits the range of motion and removes shoulder strain from the bottom position.' },
-          { name: 'Dead Bug', reps: '6 each side', type: 'safe',
+          { name: 'Side Plank', reps: '30 seconds each side', type: 'safe',
+            howTo: 'Lie on your side and prop yourself up on your forearm, elbow directly under your shoulder. Stack your feet or stagger them for a wider base. Lift your hips so your body forms a straight line from head to feet. Keep your top hip from dropping or rotating forward. Breathe steadily and brace your core throughout. Lower with control and switch sides.' },
+          { name: 'Dead Bug', reps: '10 each side', type: 'safe',
             howTo: 'Lie on your back with both arms pointing straight up to the ceiling and both knees bent at 90 degrees, shins parallel to the floor. Press your lower back firmly into the floor and keep it there for the entire set. Slowly lower one arm overhead while simultaneously extending the opposite leg toward the floor. Return and switch. If your lower back lifts off the floor at any point, the range is too large — shorten it.' }
         ]
       },
-      { name: 'CONDITIONING', fmt: 'For time — split all reps with your partner, sustainable pace', mins: 10,
+      { name: 'BLOCK C', fmt: '3–4 rounds', mins: 10,
         exercises: [
-          { name: 'Rowing Machine', reps: '80 calories total', type: 'safe',
-            howTo: 'Drive with your legs first, then lean back slightly, then pull the handle to your lower ribs. Return in the reverse order. Split the calories with your partner in chunks that let you hold a steady, controlled pace — this is not a sprint, this is a sustainable effort. The rowing motion keeps your knee in a comfortable, safe range of motion.' },
-          { name: 'Burpee', reps: '60 total', type: 'modify',
-            howTo: 'Stand tall. Step one foot back to a plank, then the other. Optional push-up. Step one foot forward, then the other, and stand. Split all reps with your partner.',
-            mod: 'Step-burpee only — no jumping your feet out or in, no jump to stand. Step back, step forward, step up. Same cardiovascular demand with zero patellofemoral impact. You are splitting reps with a partner, so keep the pace conversational. No need to go all out on this one.' }
+          { name: 'Backpack Floor Press', reps: '15', type: 'safe',
+            howTo: 'Load a backpack with books or weight and grip the straps or body of the bag with both hands at chest width. Lie on your back on the floor, knees bent, feet flat. Hold the backpack at chest height. Press it to full arm lockout overhead, then lower until your triceps touch the floor — pause briefly before the next rep. The floor limits range of motion and removes shoulder strain from the bottom position.' },
+          { name: 'Rollup', reps: '20', type: 'safe',
+            howTo: 'Lie flat on your back with arms extended overhead and legs straight. Inhale to prepare, then exhale and slowly peel your spine off the floor one vertebra at a time — arms reach forward, chin tucks, and you roll all the way up to sitting. Continue to hinge forward over your legs, then reverse: hinge back upright, then lower your spine back down to the floor bone by bone. Control the entire movement — momentum defeats the purpose. If you cannot peel up smoothly, bend your knees slightly.' }
         ]
       }
     ]
@@ -540,32 +525,27 @@ const SESSIONS = [
     blocks: [
       { name: 'BLOCK A', fmt: '3–4 rounds', mins: 10,
         exercises: [
-          { name: 'Glute Bridge', reps: '4 × 15', type: 'safe',
-            howTo: 'Lie on your back with knees bent and feet flat on the floor, roughly hip-width apart. Drive your hips up by squeezing your glutes, not by pushing through your quads. Pause at the top for 2 seconds, squeezing as hard as possible. Lower with control. To add load, place a barbell or dumbbell across your hips.' },
-          { name: 'Sumo Squat (shallow)', reps: '10', type: 'modify',
-            howTo: 'Take a wide stance with toes turned out significantly. Hold a kettlebell or dumbbell at your chest for counterbalance. Lower down with control, keeping your chest tall and knees tracking over your toes.',
-            mod: 'Shallow only — stop at approximately 60° of knee bend, well above parallel. The wide stance reduces the range the knee needs to travel to reach depth. At any pinching or lateral kneecap grinding, reduce depth further or substitute a standing hip abduction with a band instead.' },
-          { name: 'B-Stance RDL', reps: '3 × 8 each side', type: 'safe',
-            howTo: 'Hold a dumbbell or kettlebell in each hand. Stagger your feet so one foot is slightly behind the other, toes of the back foot lightly touching the floor for balance only — roughly 80–90% of your weight stays on the front leg. Hinge at the hip, pushing it back, and lower the weights along the front leg with a flat back. Feel the hamstring of the front leg load up. Drive through the front heel to return. Switch sides after all reps.' }
+          { name: 'Bodyweight B-Stance RDL', reps: '12 each side', type: 'safe',
+            howTo: 'Stand with feet hip-width apart, then stagger one foot slightly behind the other with just the toes of the back foot resting on the floor for balance — roughly 80–90% of your weight stays on the front leg. Keep your arms relaxed at your sides or hands lightly on your hips. Hinge at the hip, pushing it back, and lower your torso with a flat back until you feel the hamstring of the front leg load up. Drive through the front heel to return to standing. Switch sides after all reps.' },
+          { name: 'Bodyweight Good Mornings', reps: '10', type: 'safe',
+            howTo: 'Stand with feet hip-width apart and place both hands lightly behind your head, elbows wide. With a slight bend in the knees, hinge forward at the hips — not the waist — pushing them back as your torso drops toward parallel with the floor. Keep your back flat and chest open throughout. Squeeze your glutes and drive your hips forward to stand tall. Feel the hamstrings load on the way down and release on the way up.' }
         ]
       },
-      { name: 'BLOCK B', fmt: '4 sets', mins: 10,
+      { name: 'BLOCK B', fmt: '3–4 rounds', mins: 10,
         exercises: [
-          { name: 'Straight Leg Raise (SLR)', reps: '4 × 12 each side', type: 'safe',
-            howTo: 'Lie on your back with your non-working leg bent and foot flat on the floor. Lock the working knee 100% straight — squeeze your quad as hard as possible before the leg leaves the floor and keep that tension throughout the entire rep. Flex your foot back toward your shin. Lift the leg to about 12 inches off the floor, pause one second, then lower with control. The quad contraction must come first — if the knee softens at all, reset before the next rep.' },
-          { name: 'Backward Treadmill Walking', reps: '10 minutes', type: 'safe',
-            howTo: 'Machine OFF — do not turn the treadmill on. Stand facing away from the console and hold the side rails lightly for balance. Push the belt backward manually with the balls of your feet and toes. Walk at a slow, controlled pace. This recruits the quad eccentrically and loads the VMO with zero patellofemoral compression. Keep your torso upright and steps deliberate — do not lean heavily on the rails.' }
+          { name: 'Sumo Squat', reps: '10', type: 'modify',
+            howTo: 'Take a wide stance with toes turned out significantly. Clasp your hands at your chest or hold a light weight for counterbalance. Lower down with control, keeping your chest tall and knees tracking over your toes.',
+            mod: 'Shallow only — stop at approximately 60° of knee bend, well above parallel. The wide stance reduces the range the knee needs to travel. At any pinching or lateral kneecap grinding, reduce depth further.' },
+          { name: '1-Leg Glute Bridge', reps: '10 each side', type: 'safe',
+            howTo: 'Lie on your back with both knees bent and feet flat on the floor, hip-width apart. Extend one leg straight out so it is in line with your thigh. Drive your hips up by squeezing the glute of the planted leg, not by pushing through your quad. Pause at the top for 1–2 seconds, squeezing hard. Lower with control. Keep your hips level throughout — do not let the extended-leg side drop. Complete all reps on one side before switching.' }
         ]
       },
-      { name: 'BLOCK C', fmt: 'As Many Rounds As Possible', mins: 10,
+      { name: 'BLOCK C', fmt: '3–4 rounds', mins: 10,
         exercises: [
-          { name: 'Low Box Step-Up', reps: '6 each side', type: 'modify',
-            howTo: 'Stand in front of a low box (6–10 inches). Step up with one foot, press through that heel to bring the other foot up. Step back down one foot at a time.',
-            mod: 'Low box only — this keeps the working knee well under 60° of bend, which is exactly the safe range for your lateral patella defect. Take 3 full seconds on the step-down. The slow eccentric is the valuable part. No jumping on or off.' },
-          { name: 'Dead Bug', reps: '6 each side', type: 'safe',
-            howTo: 'Lie on your back with both arms pointing straight up to the ceiling and both knees bent at 90 degrees, shins parallel to the floor. Press your lower back firmly into the floor and keep it there for the entire set. Slowly lower one arm overhead while simultaneously extending the opposite leg toward the floor. Return and switch. If your lower back lifts off the floor at any point, the range is too large — shorten it.' },
-          { name: 'Hanging Knee Raise', reps: '10', type: 'safe',
-            howTo: 'Hang from a pull-up bar with a comfortable grip. Brace your core and draw your knees up toward your chest in a controlled arc. Avoid swinging — initiate from the abs, not momentum. Lower your legs with control. The knee joint is not loaded at all in this movement.' }
+          { name: 'Clam Shells', reps: '10 each side', type: 'safe',
+            howTo: 'Lie on your side with hips and knees bent to roughly 45 degrees, one hip stacked directly on top of the other. Keep your feet together throughout. Rotate your top knee open toward the ceiling as far as you can without letting your pelvis rock backward — the movement comes entirely from the hip. Pause at the top, then lower with control. Place a resistance band just above the knees to add load once the bodyweight version feels easy.' },
+          { name: 'Low Plank', reps: '30 seconds', type: 'safe',
+            howTo: 'Place your forearms on the floor with elbows directly under your shoulders, forearms parallel. Lift your hips so your body forms a straight line from head to heels. Brace your core hard — think about pulling your belly button toward your spine and squeezing your glutes. Keep your hips level and your lower back from sagging or piking. Breathe steadily throughout.' }
         ]
       }
     ]
@@ -804,8 +784,7 @@ function stopTimer(key, total) {
 // ═══════════════════════════════════════════════════
 function buildWorkoutHtml(sess) {
   const mods = sess.blocks.reduce((n,b) => n + b.exercises.filter(e=>e.type==='modify').length, 0);
-  let html = `<div class="sh-eye">${sess.date}</div>
-    <div class="sh-title">${sess.title}</div>
+  let html = `<div class="sh-title">${sess.title}</div>
     ${sess.intent ? `<div style="font-size:13px;color:var(--text2);margin-top:6px;margin-bottom:2px;font-style:italic;">${sess.intent}</div>` : ''}
     <div class="sh-meta">
       ${mods>0?`<span class="sh-tag mods">⚠ ${mods} Knee Mod${mods>1?'s':''}</span>`:''}
