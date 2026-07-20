@@ -919,7 +919,7 @@ document.getElementById('week-next').addEventListener('click', () => {
 // SURGERY COUNTDOWN
 // ═══════════════════════════════════════════════════
 function renderSurgeryBanner() {
-  const surgery = new Date('2026-07-20T00:00:00');
+  const surgery = new Date('2026-07-22T00:00:00');
   const today = new Date();
   today.setHours(0,0,0,0);
   const days = Math.round((surgery - today) / 86400000);
@@ -931,7 +931,7 @@ function renderSurgeryBanner() {
     <div class="surgery-label">Comeback countdown</div>
     <div class="surgery-top">
       <div><span class="surgery-count">${days}</span><span class="surgery-count-unit">${dayWord}</span></div>
-      <div class="surgery-date">July 20, 2026</div>
+      <div class="surgery-date">July 22, 2026</div>
     </div>
     <div class="surgery-quote">Returning to a weekly running volume with full-thickness patellar cartilage loss is an uphill battle, but it is mechanically possible if you approach your training like an engineer.</div>
     <div class="surgery-motto">Every session now is a rep toward the comeback.</div>`;
