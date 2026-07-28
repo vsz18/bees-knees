@@ -76,6 +76,7 @@
     .day-cell.strength{background:rgba(255,112,67,.07);border-color:rgba(255,112,67,.2)}
     .day-cell.walk{background:rgba(240,98,146,.07);border-color:rgba(240,98,146,.15)}
     .day-cell.rest{background:var(--card);border-color:var(--border)}
+    .day-cell.postop{background:var(--warn-dim);border-color:var(--warn-border)}
     .day-cell.sel{outline:2px solid var(--accent);outline-offset:1px}
     .day-cell.today .day-abbr{color:var(--warn)}
     .day-cell.today::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--warn)}
@@ -84,10 +85,12 @@
     .day-cell.strength .day-icon{background:var(--accent)}
     .day-cell.walk .day-icon{background:var(--green)}
     .day-cell.rest .day-icon{background:var(--border2)}
+    .day-cell.postop .day-icon{background:var(--warn)}
     .day-type{font-size:8px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
     .day-cell.strength .day-type{color:var(--accent)}
     .day-cell.walk .day-type{color:var(--green)}
     .day-cell.rest .day-type{color:var(--text3)}
+    .day-cell.postop .day-type{color:var(--warn)}
     .day-detail{border-radius:20px;padding:18px;margin-bottom:16px;box-shadow:var(--card-shadow)}
     .day-detail.s-detail{background:rgba(255,112,67,.06);border:1px solid var(--accent-border)}
     .day-detail.w-detail{background:rgba(240,98,146,.06);border:1px solid rgba(240,98,146,.2)}
@@ -239,10 +242,11 @@
     .tl-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;margin-top:3px}
     .tl-dot.now{background:var(--accent);box-shadow:0 0 0 3px rgba(255,112,67,.18)}
     .tl-dot.fut{background:var(--border2)}
+    .tl-dot.done{background:var(--green)}
     .tl-bar{width:2px;flex:1;background:var(--border);margin-top:3px;min-height:28px}
     .tl-content{flex:1;padding-bottom:14px}
     .tl-phase{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
-    .tl-phase.now{color:var(--accent)}.tl-phase.fut{color:var(--text3)}
+    .tl-phase.now{color:var(--accent)}.tl-phase.fut{color:var(--text3)}.tl-phase.done{color:var(--green)}
     .tl-title{font-size:15px;font-weight:700;margin-top:2px}
     .tl-desc{font-size:13px;color:var(--text2);margin-top:4px;line-height:1.45}
     @media(min-width:768px){
@@ -270,7 +274,7 @@
     </div>
     <div class="top-right">
       <button class="theme-btn" id="theme-btn">🌙</button>
-      <div class="phase-pill">Prehab</div>
+      <div class="phase-pill" id="phase-pill">Prehab</div>
     </div>
   </div>
   <div class="app-body">
@@ -299,10 +303,12 @@
         <div class="week-sub" id="week-sub">Loading...</div>
         <button class="week-nav-btn" id="week-next">&#8250;</button>
       </div>
+      <div id="sess-toggle-wrap">
       <div class="toggle-label">Strength sessions / week</div>
       <div class="toggle-row" id="sess-toggle">
         <button class="tog-btn active" data-n="2">2 sessions</button>
         <button class="tog-btn" data-n="3">3 sessions</button>
+      </div>
       </div>
       <div class="day-strip" id="day-strip"></div>
       <div id="day-detail"></div>
@@ -369,8 +375,8 @@
 
     <!-- ══════════ INFO ══════════ -->
     <div id="tab-info" class="tab-panel">
-      <div class="info-title">About Your <em>Procedure</em></div>
-      <div class="info-sub">Research on BMAC + Intraosseous Bioplasty, and what to expect.</div>
+      <div class="info-title">About Your <em>Recovery</em></div>
+      <div class="info-sub">The procedure is done — here's the science behind it and what it takes to get back to movement.</div>
 
       <div class="section-label">What Is BMAC?</div>
       <div class="research-card">
@@ -413,9 +419,9 @@
       </div>
 
       <div class="research-card" style="margin-bottom:20px">
-        <div class="rc-head"><div class="rc-title">Why Prehab Matters</div></div>
+        <div class="rc-head"><div class="rc-title">Why Prehab Mattered</div></div>
         <div class="rc-body">
-          <div class="rc-text">Studies consistently show that pre-operative quadriceps strength is the single strongest predictor of post-operative recovery speed. Every session you complete now directly accelerates the timeline after the procedure.</div>
+          <div class="rc-text">Studies consistently show that pre-operative quadriceps strength is the single strongest predictor of post-operative recovery speed. The prehab work you put in before the procedure is now paying off in how you recover.</div>
           <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text">Stronger quads = better mechanical protection for the joint surface during loading</div></div>
           <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text">Better cardiovascular fitness going in → faster healing metabolism post-procedure</div></div>
           <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text">Hip strength reduces patellofemoral contact forces by up to 30% during daily movement</div></div>
@@ -423,9 +429,9 @@
       </div>
 
       <div class="section-label">Recovery Roadmap</div>
-      <div class="tl-item"><div class="tl-line"><div class="tl-dot now"></div><div class="tl-bar"></div></div><div class="tl-content"><div class="tl-phase now">Now — Prehab</div><div class="tl-title">Build Your Foundation</div><div class="tl-desc">Strengthen quads, glutes, and hips. Every unit of strength you build now directly accelerates post-op recovery.</div></div></div>
-      <div class="tl-item"><div class="tl-line"><div class="tl-dot fut"></div><div class="tl-bar"></div></div><div class="tl-content"><div class="tl-phase fut">Next — Procedure</div><div class="tl-title">BMAC + Bioplasty</div><div class="tl-desc">Outpatient, 1–2 hours. Expect 4–8 weeks of protected weight-bearing post-op.</div></div></div>
-      <div class="tl-item"><div class="tl-line"><div class="tl-dot fut"></div><div class="tl-bar"></div></div><div class="tl-content"><div class="tl-phase fut">Post-Op Phases 1–2</div><div class="tl-title">Protect, Then Load</div><div class="tl-desc">Weeks 0–6: isometrics, pool, gentle ROM. Weeks 6–16: progressive gym loading.</div></div></div>
+      <div class="tl-item"><div class="tl-line"><div class="tl-dot done"></div><div class="tl-bar"></div></div><div class="tl-content"><div class="tl-phase done">Done — Prehab</div><div class="tl-title">Built the Foundation</div><div class="tl-desc">Quads, glutes, and hips strengthened ahead of the procedure.</div></div></div>
+      <div class="tl-item"><div class="tl-line"><div class="tl-dot done"></div><div class="tl-bar"></div></div><div class="tl-content"><div class="tl-phase done">Done — Procedure</div><div class="tl-title">BMAC + Bioplasty</div><div class="tl-desc">Completed July 22, 2026. Outpatient, 1–2 hours.</div></div></div>
+      <div class="tl-item"><div class="tl-line"><div class="tl-dot now"></div><div class="tl-bar"></div></div><div class="tl-content"><div class="tl-phase now">Now — Post-Op Recovery</div><div class="tl-title">Protect, Then Load</div><div class="tl-desc">Early weeks: swelling control, gentle ROM, protected weight-bearing. Progression back to loading follows your surgeon/PT clearance.</div></div></div>
       <div class="tl-item" style="margin-bottom:16px"><div class="tl-line"><div class="tl-dot fut"></div></div><div class="tl-content"><div class="tl-phase fut">Goal</div><div class="tl-title">Return to Running</div><div class="tl-desc">4–12 months post-procedure with a walk/run return-to-run protocol.</div></div></div>
 
       <div class="section-label">Questions for Your Doctor</div>
@@ -468,6 +474,11 @@
 // DATA
 // ═══════════════════════════════════════════════════
 
+const SURGERY_DATE = new Date('2026-07-22T00:00:00');
+function isPostSurgery() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  return today >= SURGERY_DATE;
+}
 const PREHAB = {
   name: 'PREHAB ADD-ON',
   fmt: '3 ROUNDS — DO EVERY SESSION',
@@ -490,31 +501,31 @@ const PREHAB = {
 
 const SESSIONS = [
   {
-    id: 0, label: 'UPPER', title: 'SQUAD — UPPER', date: 'JUNE 23/24',
+    id: 0, label: 'UPPER', title: 'SQUAD — UPPER', date: 'JULY 20',
     intent: 'Move well, recover smart.',
     blocks: [
       { name: 'BLOCK A', fmt: '3–4 rounds', mins: 10,
         exercises: [
-          { name: 'Pushups', reps: '10', type: 'safe',
-            howTo: 'Start in a high plank with hands slightly wider than shoulder-width, body in a straight line from head to heels. Lower your chest to the floor with control, keeping your elbows at roughly 45 degrees from your torso — not flared wide. Press back to full lockout. Brace your core the entire time so your hips do not sag or pike. Scale to an incline if needed.' },
-          { name: 'The Hundred', reps: '100 pulses', type: 'safe',
-            howTo: 'Lie on your back and curl your head, neck, and shoulders off the floor. Lift your legs to a 45-degree angle (lower = harder; raise them higher if your back lifts off). Extend your arms long at your sides a few inches off the floor. Pump your arms up and down in small, sharp pulses — inhale for 5 pulses, exhale for 5 pulses. That is one set of 10. Complete 10 sets for 100 total pulses. Keep your lower back pressed into the floor throughout.' }
+          { name: 'Pike Pushup', reps: '10', type: 'safe',
+            howTo: 'Start in a downward-dog position — hips high, hands and feet on the floor, forming an inverted V. Bend your elbows to lower the top of your head toward the floor between your hands, keeping your hips high throughout. Press back to the start. This shifts load onto the shoulders more than a standard pushup. Scale by keeping feet closer to hands to reduce the angle.' },
+          { name: 'Bicycle Crunch', reps: '20 each side', type: 'safe',
+            howTo: 'Lie on your back with hands lightly behind your head and knees bent to 90 degrees. Bring one elbow toward the opposite knee while extending the other leg straight out low, then switch in a smooth pedaling motion. Keep your lower back pressed into the floor and move with control rather than speed — this is a rotation drill, not a race.' }
         ]
       },
       { name: 'BLOCK B', fmt: '3–4 rounds', mins: 10,
         exercises: [
-          { name: 'Side Plank', reps: '30 seconds each side', type: 'safe',
-            howTo: 'Lie on your side and prop yourself up on your forearm, elbow directly under your shoulder. Stack your feet or stagger them for a wider base. Lift your hips so your body forms a straight line from head to feet. Keep your top hip from dropping or rotating forward. Breathe steadily and brace your core throughout. Lower with control and switch sides.' },
-          { name: 'Dead Bug', reps: '10 each side', type: 'safe',
-            howTo: 'Lie on your back with both arms pointing straight up to the ceiling and both knees bent at 90 degrees, shins parallel to the floor. Press your lower back firmly into the floor and keep it there for the entire set. Slowly lower one arm overhead while simultaneously extending the opposite leg toward the floor. Return and switch. If your lower back lifts off the floor at any point, the range is too large — shorten it.' }
+          { name: 'Backpack Bent-Over Row', reps: '15', type: 'safe',
+            howTo: 'Load a backpack with books or weight. Hinge forward at the hips until your torso is close to parallel with the floor, back flat, soft bend in the knees. Hold the backpack by its straps or base and row it to your ribs, leading with your elbows and squeezing your shoulder blades together. Lower with control over 2–3 seconds before the next rep.' },
+          { name: 'Superman', reps: '15', type: 'safe',
+            howTo: 'Lie face-down with arms extended overhead and legs straight. Simultaneously lift your arms, chest, and legs a few inches off the floor, squeezing your glutes and upper back. Hold briefly at the top, then lower with control. Keep the lift small and controlled — this is about spinal extensor endurance, not height.' }
         ]
       },
       { name: 'BLOCK C', fmt: '3–4 rounds', mins: 10,
         exercises: [
-          { name: 'Backpack Floor Press', reps: '15', type: 'safe',
-            howTo: 'Load a backpack with books or weight and grip the straps or body of the bag with both hands at chest width. Lie on your back on the floor, knees bent, feet flat. Hold the backpack at chest height. Press it to full arm lockout overhead, then lower until your triceps touch the floor — pause briefly before the next rep. The floor limits range of motion and removes shoulder strain from the bottom position.' },
-          { name: 'Rollup', reps: '20', type: 'safe',
-            howTo: 'Lie flat on your back with arms extended overhead and legs straight. Inhale to prepare, then exhale and slowly peel your spine off the floor one vertebra at a time — arms reach forward, chin tucks, and you roll all the way up to sitting. Continue to hinge forward over your legs, then reverse: hinge back upright, then lower your spine back down to the floor bone by bone. Control the entire movement — momentum defeats the purpose. If you cannot peel up smoothly, bend your knees slightly.' }
+          { name: 'Plank Shoulder Taps', reps: '20 total (10 each hand)', type: 'safe',
+            howTo: 'Start in a high plank, hands under shoulders, feet slightly wider than hip-width for stability. Without letting your hips rock or rotate, lift one hand and tap the opposite shoulder, then return it to the floor and repeat with the other hand. Keep your core braced hard throughout — the goal is a still torso while the arm moves.' },
+          { name: 'Russian Twist', reps: '20 total (10 each side)', type: 'safe',
+            howTo: 'Sit with knees bent and feet either lifted slightly or resting on the floor for an easier version. Lean back to about 45 degrees, keeping your back flat, and clasp your hands together in front of your chest. Rotate your torso to tap the floor beside one hip, then rotate to the other side. Add a light weight or backpack in your hands once bodyweight feels easy.' }
         ]
       }
     ]
@@ -602,14 +613,32 @@ const SESSIONS = [
 const WEEK_LAYOUTS = {
   2: [
     { type:'strength', sid:0 },{ type:'walk' },{ type:'walk' },
-    { type:'strength', sid:1 },{ type:'walk' },{ type:'walk' },{ type:'rest' }
+    { type:'postop' },{ type:'walk' },{ type:'walk' },{ type:'rest' }
   ],
   3: [
     { type:'strength', sid:0 },{ type:'walk' },{ type:'strength', sid:1 },
     { type:'walk' },{ type:'strength', sid:2 },{ type:'walk' },{ type:'rest' }
   ]
 };
+const POSTOP_LAYOUT = [
+  { type:'postop' },{ type:'walk' },{ type:'postop' },
+  { type:'rest' },{ type:'postop' },{ type:'walk' },{ type:'rest' }
+];
 const DAY_ABBRS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
+const POSTOP_TIPS_SWELLING = [
+  { label:'Ankle Pumps', desc:'Point and flex your foot slowly, 15–20 reps, once every hour you\'re awake. The single best thing you can do in the first 72 hours — it keeps blood moving and helps prevent clots and swelling.' },
+  { label:'Elevation', desc:'Prop the leg above heart level whenever you\'re resting. Pair it with icing — elevation drains fluid away from the joint, icing keeps it from pooling back in.' },
+  { label:'Ice', desc:'20 minutes on, 20 minutes off, as often as your surgeon allows. Controlling swelling now is what lets you regain motion faster later.' }
+];
+const POSTOP_TIPS_ROM = [
+  { label:'Heel Slides', desc:'Lying down, slowly slide your heel toward your glutes, bending the knee only as far as is comfortable and within your protocol\'s limits. 10 reps, a few times a day.' },
+  { label:'Quad Sets', desc:'Small rolled towel under the knee — press it down without bending the joint. Hold 5 seconds, 10 reps. Zero range of motion, pure activation, and safe from day one under most protocols.' },
+  { label:'Passive Extension Hangs', desc:'Prop your heel on a rolled towel so the knee can relax straight under gravity. Hold 2 minutes, repeat several times a day — protecting full extension early prevents a stiff, flexed knee later.' }
+];
+const POSTOP_TIPS_ACTIVATION = [
+  { label:'Glute Sets', desc:'Lying flat, squeeze the glutes hard for 5 seconds, 10 reps. No knee involvement, keeps the hip firing.' },
+  { label:'Seated Ankle Circles', desc:'Slowly rotate the ankle in each direction. Maintains lower-leg mobility and circulation while the knee itself stays completely at rest.' }
+];
 const WALK_TIPS = [
   { label:'Duration', desc:'20–30 minutes. Start shorter if the knee is flared; build up by 5 minutes each week.' },
   { label:'Pace', desc:'Conversational — you should be able to talk comfortably. This is recovery, not a workout.' },
@@ -667,12 +696,12 @@ function renderWeek() {
     titleEl.innerHTML = label;
   }
   document.getElementById('week-sub').textContent = getWeekRange();
-  const layout = WEEK_LAYOUTS[state.sessCount];
+  const layout = isPostSurgery() ? POSTOP_LAYOUT : WEEK_LAYOUTS[state.sessCount];
   const todayIdx = getTodayIdx();
   let html = '';
   layout.forEach((day, i) => {
-    const icon = day.type === 'strength' ? '💪' : day.type === 'walk' ? '🚶' : '😴';
-    const lbl = day.type === 'strength' ? SESSIONS[day.sid].label : day.type === 'walk' ? 'Walk / Bike' : 'Rest';
+    const icon = day.type === 'strength' ? '💪' : day.type === 'walk' ? '🚶' : day.type === 'postop' ? '🩹' : '😴';
+    const lbl = day.type === 'strength' ? SESSIONS[day.sid].label : day.type === 'walk' ? 'Walk / Bike' : day.type === 'postop' ? 'Recovery' : 'Rest';
     const isToday = state.weekOffset === 0 && i === todayIdx;
     html += `<div class="day-cell ${day.type}${isToday?' today':''}${i===state.selDay?' sel':''}" data-i="${i}">
       <span class="day-abbr">${DAY_ABBRS[i]}</span>
@@ -693,7 +722,7 @@ function renderWeek() {
 function renderDayDetail() {
   const el = document.getElementById('day-detail');
   if (state.selDay === null) { el.innerHTML = ''; return; }
-  const layout = WEEK_LAYOUTS[state.sessCount];
+  const layout = isPostSurgery() ? POSTOP_LAYOUT : WEEK_LAYOUTS[state.sessCount];
   const day = layout[state.selDay];
   const abbr = DAY_ABBRS[state.selDay];
   const isToday = state.selDay === getTodayIdx();
@@ -717,6 +746,25 @@ function renderDayDetail() {
     <div class="card">
       <div class="wt-section-hd">Stationary Bike</div>
       ${BIKE_TIPS.map(t=>`<div class="walk-tip"><div class="wt-label">${t.label}</div><div class="wt-desc">${t.desc}</div></div>`).join('')}
+    </div>`;
+  } else if (day.type === 'postop') {
+    el.innerHTML = `<div class="day-detail w-detail">
+      <div class="dd-label">${dayLbl} · Early Recovery</div>
+      <div class="dd-title">Recovery Care Day</div>
+      <div class="dd-desc">Strength training is paused for now. This slot is dedicated to protecting the joint, controlling swelling, and rebuilding basic range of motion — the groundwork for getting back to real movement. This is general guidance only; always defer to your actual PT/surgeon protocol once you have it.</div>
+      <div class="dd-chips"><span class="dd-chip green">Follow PT protocol</span><span class="dd-chip green">Pain-free only</span><span class="dd-chip green">Ice + elevate after</span></div>
+    </div>
+    <div class="card">
+      <div class="wt-section-hd">Circulation &amp; Swelling Control</div>
+      ${POSTOP_TIPS_SWELLING.map(t=>`<div class="walk-tip"><div class="wt-label">${t.label}</div><div class="wt-desc">${t.desc}</div></div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="wt-section-hd">Gentle Range of Motion</div>
+      ${POSTOP_TIPS_ROM.map(t=>`<div class="walk-tip"><div class="wt-label">${t.label}</div><div class="wt-desc">${t.desc}</div></div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="wt-section-hd">Activation — Only If Cleared</div>
+      ${POSTOP_TIPS_ACTIVATION.map(t=>`<div class="walk-tip"><div class="wt-label">${t.label}</div><div class="wt-desc">${t.desc}</div></div>`).join('')}
     </div>`;
   } else {
     el.innerHTML = `<div class="day-detail r-detail">
@@ -816,7 +864,7 @@ function buildWorkoutHtml(sess) {
     });
     html += `</div>`;
   });
-  html += `<div class="prehab-card"><div class="prehab-head"><div class="prehab-name">${PREHAB.name}</div><div class="prehab-fmt">${PREHAB.fmt}</div></div><div class="prehab-note">${PREHAB.note}</div>`;
+  html += `<div class="prehab-card"><div class="prehab-head"><div class="prehab-name">${isPostSurgery() ? 'POST HAB ADD-ON' : PREHAB.name}</div><div class="prehab-fmt">${PREHAB.fmt}</div></div><div class="prehab-note">${PREHAB.note}</div>`;
   PREHAB.exercises.forEach((ex,i) => {
     const pk = `prehab-${i}`;
     const open = state.expandedPrehab === pk;
@@ -919,27 +967,46 @@ document.getElementById('week-next').addEventListener('click', () => {
 // SURGERY COUNTDOWN
 // ═══════════════════════════════════════════════════
 function renderSurgeryBanner() {
-  const surgery = new Date('2026-07-22T00:00:00');
   const today = new Date();
   today.setHours(0,0,0,0);
-  const days = Math.round((surgery - today) / 86400000);
   const el = document.getElementById('surgery-banner');
   if (!el) return;
-  if (days < 0) { el.style.display = 'none'; return; }
-  const dayWord = days === 1 ? 'day' : 'days';
-  el.innerHTML = `
-    <div class="surgery-label">Comeback countdown</div>
-    <div class="surgery-top">
-      <div><span class="surgery-count">${days}</span><span class="surgery-count-unit">${dayWord}</span></div>
-      <div class="surgery-date">July 22, 2026</div>
-    </div>
-    <div class="surgery-quote">Returning to a weekly running volume with full-thickness patellar cartilage loss is an uphill battle, but it is mechanically possible if you approach your training like an engineer.</div>
-    <div class="surgery-motto">Every session now is a rep toward the comeback.</div>`;
+  if (today < SURGERY_DATE) {
+    const days = Math.round((SURGERY_DATE - today) / 86400000);
+    const dayWord = days === 1 ? 'day' : 'days';
+    el.innerHTML = `
+      <div class="surgery-label">Comeback countdown</div>
+      <div class="surgery-top">
+        <div><span class="surgery-count">${days}</span><span class="surgery-count-unit">${dayWord}</span></div>
+        <div class="surgery-date">July 22, 2026</div>
+      </div>
+      <div class="surgery-quote">Returning to a weekly running volume with full-thickness patellar cartilage loss is an uphill battle, but it is mechanically possible if you approach your training like an engineer.</div>
+      <div class="surgery-motto">Every session now is a rep toward the comeback.</div>`;
+  } else {
+    const days = Math.round((today - SURGERY_DATE) / 86400000);
+    const dayWord = days === 1 ? 'day' : 'days';
+    el.innerHTML = `
+      <div class="surgery-label">Recovery in progress</div>
+      <div class="surgery-top">
+        <div><span class="surgery-count">${days}</span><span class="surgery-count-unit">${dayWord} post-op</span></div>
+        <div class="surgery-date">Procedure: July 22, 2026</div>
+      </div>
+      <div class="surgery-quote">The hard part is done. Now it's about protecting the joint, controlling swelling, and patiently rebuilding range of motion — movement first, load later.</div>
+      <div class="surgery-motto">Every bit of motion now is a step back toward running.</div>`;
+  }
+}
+
+function renderPhase() {
+  const el = document.getElementById('phase-pill');
+  if (el) el.textContent = isPostSurgery() ? 'Recovery' : 'Prehab';
+  const toggleWrap = document.getElementById('sess-toggle-wrap');
+  if (toggleWrap) toggleWrap.style.display = isPostSurgery() ? 'none' : '';
 }
 
 // ═══════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════
+renderPhase();
 renderSurgeryBanner();
 renderWeek();
 state.selDay = getTodayIdx();
