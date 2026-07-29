@@ -762,24 +762,180 @@ const WEEK_LAYOUTS = {
     { type:'walk' },{ type:'strength', sid:2 },{ type:'walk' },{ type:'rest' }
   ]
 };
-const POSTOP_LAYOUT = [
-  { type:'postop' },{ type:'walk' },{ type:'postop' },
-  { type:'rest' },{ type:'postop' },{ type:'walk' },{ type:'rest' }
-];
 const DAY_ABBRS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
-const POSTOP_TIPS_SWELLING = [
-  { label:'Ankle Pumps', desc:'Point and flex your foot slowly, 15–20 reps, once every hour you\'re awake. The single best thing you can do in the first 72 hours — it keeps blood moving and helps prevent clots and swelling.' },
-  { label:'Elevation', desc:'Prop the leg above heart level whenever you\'re resting. Pair it with icing — elevation drains fluid away from the joint, icing keeps it from pooling back in.' },
-  { label:'Ice', desc:'20 minutes on, 20 minutes off, as often as your surgeon allows. Controlling swelling now is what lets you regain motion faster later.' }
-];
-const POSTOP_TIPS_ROM = [
-  { label:'Heel Slides', desc:'Lying down, slowly slide your heel toward your glutes, bending the knee only as far as is comfortable and within your protocol\'s limits. 10 reps, a few times a day.' },
-  { label:'Quad Sets', desc:'Small rolled towel under the knee — press it down without bending the joint. Hold 5 seconds, 10 reps. Zero range of motion, pure activation, and safe from day one under most protocols.' },
-  { label:'Passive Extension Hangs', desc:'Prop your heel on a rolled towel so the knee can relax straight under gravity. Hold 2 minutes, repeat several times a day — protecting full extension early prevents a stiff, flexed knee later.' }
-];
-const POSTOP_TIPS_ACTIVATION = [
-  { label:'Glute Sets', desc:'Lying flat, squeeze the glutes hard for 5 seconds, 10 reps. No knee involvement, keeps the hip firing.' },
-  { label:'Seated Ankle Circles', desc:'Slowly rotate the ankle in each direction. Maintains lower-leg mobility and circulation while the knee itself stays completely at rest.' }
+// Each entry covers a range of post-op weeks. `pattern` maps Mon..Sun to a
+// key in `groups`, so repeating days (e.g. Mon/Wed/Fri the same session)
+// are defined once and reused.
+const POSTOP_PROGRAMS = [
+  { weekStart:1, weekEnd:4,
+    phaseLabel:'Phase 1 · Weeks 1–4', subLabel:'Early Healing & Quiescence',
+    groups: {
+      A: { type:'postop', label:'Quad+Core', title:'Quad & Core Reactivation',
+        cards:[{ heading:'Quad & Core Reactivation', items:[
+          {label:'Quad Sets', desc:'3×10 reps, hold 5 seconds. Squeeze your quad, pressing the back of your knee flat into the bed. Focus on contracting the VMO (inner thigh/quad).'},
+          {label:'Straight Leg Raises', desc:'3×10 reps. Lock the knee completely straight before lifting. If your knee dips or bends during the lift, drop back to quad sets.'},
+          {label:'Glute Bridges', desc:'3×12 reps. Drive through your heels, squeezing your glutes at the top.'},
+          {label:'Core Deadbugs', desc:'3×8 reps per side. Keep your lower back flat against the floor; lower the opposite arm and leg slowly.'}
+        ]}] },
+      B: { type:'walk', label:'Pool Run', title:'Unloaded Cardio',
+        note:'Ensure incisions are 100% closed and cleared by your doctor before entering the pool.',
+        cards:[{ heading:'Deep-Water Pool Running', items:[
+          {label:'Duration', desc:'20–30 minutes. Use a flotation belt in deep water.'},
+          {label:'Form', desc:'Maintain a tall posture and cycle your legs through a full running stride without touching the pool floor.'}
+        ]}] },
+      R: { type:'rest', title:'Complete Rest',
+        desc:'Full rest today. Ice 20 minutes on / 20 off as tolerated, and keep the leg elevated above heart level whenever resting.' }
+    },
+    pattern:['A','B','A','B','A','B','R']
+  },
+  { weekStart:5, weekEnd:8,
+    phaseLabel:'Phase 1 · Weeks 5–8', subLabel:'Range of Motion & Pool Aerobic Volume',
+    groups: {
+      A: { type:'postop', label:'Hip+ROM', title:'Non-Impact Strength & Hip Stability',
+        cards:[{ heading:'Non-Impact Strength & Hip Stability', items:[
+          {label:'Side-Lying Clamshells', desc:'3×15 reps per side. Keep your hips stacked to target the gluteus medius.'},
+          {label:'Prone Hip Extensions', desc:'3×12 reps. Lie face down, lift the leg slightly while keeping it straight to engage glutes and hamstrings.'},
+          {label:'Standing Hamstring Curls (Bodyweight)', desc:'3×12 reps. Slow, controlled motion.'},
+          {label:'Long Arc Quads (0–30° only)', desc:'3×10 reps. Sit on a high chair, gently extend the leg up to 30° from straight, avoiding deep bends.'}
+        ]}] },
+      B: { type:'walk', label:'Bike+Pool', title:'Aerobic Conditioning',
+        cards:[{ heading:'Aerobic Conditioning', items:[
+          {label:'Stationary Cycling (High Saddle)', desc:'30–40 minutes at 90+ RPM, zero resistance. Saddle height should allow a very soft (15°) knee bend at the bottom of the stroke.'},
+          {label:'Deep-Water Pool Running', desc:'20 minutes immediately following the bike, to flush synovial fluid through the joint.'}
+        ]}] },
+      R: { type:'rest', title:'Rest & Mobility', desc:'Gentle calf and hamstring stretching. Otherwise full rest.' }
+    },
+    pattern:['A','B','A','B','A','B','R']
+  },
+  { weekStart:9, weekEnd:12,
+    phaseLabel:'Phase 1 · Weeks 9–12', subLabel:'Preparing for Closed-Chain Loading',
+    groups: {
+      A: { type:'postop', label:'Isometrics', title:'Progressive Isometric Strength',
+        cards:[{ heading:'Progressive Isometric Strength', items:[
+          {label:'Wall Sit Isometrics (30° Knee Bend)', desc:'4×30-second holds. Place a soft block between your knees to engage the adductors and VMO.'},
+          {label:'B-Stance Glute Bridges', desc:'3×10 reps per side, staggered foot position to progressively load one hip.'},
+          {label:'Standing Calf Raises', desc:'3×15 reps, double leg, slow 3-second descent.'},
+          {label:'Backward Walking', desc:'3×5 minutes on a flat surface or unpowered treadmill — toe-to-heel stroke to build VMO endurance without joint shearing.'}
+        ]}] },
+      B: { type:'walk', label:'Pool Interval', title:'Pool Running Intervals',
+        cards:[{ heading:'Pool Running Intervals', items:[
+          {label:'Warm-up', desc:'10 minutes easy pool run.'},
+          {label:'Main Set', desc:'10 × 1 minute hard pool sprint / 1 minute easy pool float.'},
+          {label:'Cool-down', desc:'5 minutes easy.'}
+        ]}] },
+      C: { type:'walk', label:'Long Cardio', title:'Long Aerobic Cross-Training',
+        cards:[{ heading:'Long Aerobic Cross-Training', items:[
+          {label:'Session', desc:'45–60 minutes continuous stationary cycling (minimal resistance) or deep-water pool running.'}
+        ]}] },
+      R: { type:'rest', title:'Rest', desc:'Full rest and recovery.' }
+    },
+    pattern:['A','B','A','B','A','C','R']
+  },
+  { weekStart:13, weekEnd:24,
+    phaseLabel:'Phase 2 · Weeks 13–24', subLabel:'Sample Week — The Muscular Brake System',
+    groups: {
+      MON: { type:'strength', label:'Glute/Ham', title:'Lower Body Strength — Glute & Hamstring Focus',
+        cards:[{ heading:'Glute & Hamstring Focus', items:[
+          {label:'Barbell Hip Thrusts', desc:'4×8 reps.'},
+          {label:'B-Stance Romanian Deadlifts (RDLs)', desc:'3×10 reps per leg.'},
+          {label:'Hamstring Curl Machine', desc:'3×12 reps.'},
+          {label:'Monster Band Walks (Lateral)', desc:'3×15 steps each way.'}
+        ]}] },
+      TUE: { type:'walk', label:'Bike Z2', title:'Cardio Engine',
+        cards:[{ heading:'Cardio Engine', items:[
+          {label:'Stationary Bike', desc:'45 minutes, incorporating light resistance at zone 2 heart rate.'}
+        ]}] },
+      WED: { type:'strength', label:'Quad Shield', title:'Lower Body Strength — Quad Shield Focus',
+        cards:[{ heading:'Quad Shield Focus', items:[
+          {label:'Shallow Sumo Box Squats', desc:'4×8 reps, to a high box, <45° knee bend.'},
+          {label:'Step-Ups', desc:'3×10 reps per leg. Low 4-inch step, focusing on a slow eccentric lowering.'},
+          {label:'Single-Leg Calf Raises', desc:'3×12 reps per side.'},
+          {label:'Sled Drag (Backward Walking, light sled harness)', desc:'4×40 yards.'}
+        ]}] },
+      THU: { type:'walk', label:'Pool Run', title:'Active Recovery',
+        cards:[{ heading:'Active Recovery', items:[
+          {label:'Deep-Water Pool Running', desc:'45 minutes continuous.'}
+        ]}] },
+      FRI: { type:'postop', label:'Core+Balance', title:'Core & Kinetic Chain',
+        cards:[{ heading:'Core & Kinetic Chain', items:[
+          {label:'Paloff Presses', desc:'3×12 reps per side.'},
+          {label:'Single-Leg Balance on Foam Pad', desc:'3×45 seconds per leg.'},
+          {label:'Side-Plank with Hip Abduction', desc:'3×8 reps per side.'}
+        ]}] },
+      SAT: { type:'walk', label:'Long Cardio', title:'Long Aerobic Volume',
+        cards:[{ heading:'Long Aerobic Volume', items:[
+          {label:'Session', desc:'60–75 minutes cycling or low-impact elliptical, if cleared by PT and pain-free.'}
+        ]}] },
+      SUN: { type:'rest', title:'Complete Rest', desc:'Full rest today.' }
+    },
+    pattern:['MON','TUE','WED','THU','FRI','SAT','SUN']
+  },
+  { weekStart:25, weekEnd:36,
+    phaseLabel:'Phase 3 · Weeks 25–36', subLabel:'Sample Week — Beta Test Run/Walk Matrix',
+    groups: {
+      MON: { type:'strength', label:'Maint. Strength', title:'Heavy Strength (Maintenance)',
+        cards:[{ heading:'Maintenance Strength Lifting', items:[
+          {label:'RDLs, Hip Thrusts, Shallow Squats', desc:'Maintain the loading built in Phase 2 — same movements, steady volume.'}
+        ]}] },
+      TUE: { type:'walk', label:'Run/Walk 1', title:'Run/Walk Matrix — Session 1 (Soft Surface)',
+        cards:[{ heading:'Run/Walk Matrix — Session 1', items:[
+          {label:'Surface', desc:'Grass field or smooth dirt trail. Zero pavement.'},
+          {label:'Protocol', desc:'10 min walk warm-up → (1 min jog / 2 min walk) × 8 rounds → 5 min walk cool-down. Total impact time: 8 minutes.'},
+          {label:'Focus', desc:'Metronome set to 175 SPM.'}
+        ]}] },
+      WED: { type:'walk', label:'Pool Run', title:'Unloaded Cardio Recovery',
+        cards:[{ heading:'Unloaded Cardio Recovery', items:[
+          {label:'Deep-Water Pool Running', desc:'45 minutes.'}
+        ]}] },
+      THU: { type:'strength', label:'Plyo/Landing', title:'Plyometric / Deceleration Mechanics',
+        cards:[{ heading:'Plyometric & Deceleration Mechanics', items:[
+          {label:'Double-Leg Snap-Downs', desc:'3×6 reps. Land softly into an athletic stance.'},
+          {label:'Single-Leg Calf Hops (thick foam mat)', desc:'3×10 reps per leg.'}
+        ]}] },
+      FRI: { type:'walk', label:'Run/Walk 2', title:'Run/Walk Matrix — Session 2 (Soft Surface)',
+        cards:[{ heading:'Run/Walk Matrix — Session 2', items:[
+          {label:'Surface', desc:'Cinder track or grass.'},
+          {label:'Protocol', desc:'(1.5 min jog / 1.5 min walk) × 8 rounds. Total impact time: 12 minutes.'}
+        ]}] },
+      SAT: { type:'walk', label:'Long Cardio', title:'Hybrid Long Cardio',
+        cards:[{ heading:'Hybrid Long Cardio', items:[
+          {label:'Session', desc:'60 minutes cycling or elliptical.'}
+        ]}] },
+      SUN: { type:'rest', title:'Rest & Edema Check', desc:'Assess for any deep, nocturnal aching in the kneecap. If present, treat it as a signal to scale back before it becomes a setback.' }
+    },
+    pattern:['MON','TUE','WED','THU','FRI','SAT','SUN']
+  },
+  { weekStart:37, weekEnd:9999,
+    phaseLabel:'Phase 4 · Weeks 37+', subLabel:'Hybrid Volume & Marathon Build',
+    groups: {
+      MON: { type:'strength', label:'Strength', title:'Strength Maintenance',
+        cards:[{ heading:'Strength Maintenance', items:[
+          {label:'Note', desc:'Day-by-day specifics for this phase haven\'t been set yet — check back closer to Month 9. In the meantime, keep the Phase 2/3 lifts going at maintenance volume.'}
+        ]}] },
+      TUE: { type:'walk', label:'Run', title:'Soft-Surface Run',
+        cards:[{ heading:'Soft-Surface Run', items:[
+          {label:'Note', desc:'This is the 50% impact-mileage side of the hybrid model (see the Research tab for the full split). Specific paces and distances to be set as this phase approaches.'}
+        ]}] },
+      WED: { type:'walk', label:'Cross-Train', title:'Pool / Bike Cross-Training',
+        cards:[{ heading:'Pool / Bike Cross-Training', items:[
+          {label:'Note', desc:'The 50% cross-training side of the hybrid model — pool running, cycling, or elliptical.'}
+        ]}] },
+      THU: { type:'walk', label:'Run', title:'Soft-Surface Run',
+        cards:[{ heading:'Soft-Surface Run', items:[
+          {label:'Note', desc:'Second impact-mileage session of the week — soft surfaces only, per the hybrid model.'}
+        ]}] },
+      FRI: { type:'walk', label:'Cross-Train', title:'Pool / Bike Cross-Training',
+        cards:[{ heading:'Pool / Bike Cross-Training', items:[
+          {label:'Note', desc:'Second cross-training session of the week.'}
+        ]}] },
+      SAT: { type:'walk', label:'Long Run', title:'Long Soft-Surface Run',
+        cards:[{ heading:'Long Soft-Surface Run', items:[
+          {label:'Note', desc:'Weekly long run on grass/trail — volume to be set based on how Phase 3 finishes.'}
+        ]}] },
+      SUN: { type:'rest', title:'Rest & Edema Check', desc:'Same safety check as Phase 3 — any deep nocturnal ache means drop volume 30% for two weeks and return to the pool.' }
+    },
+    pattern:['MON','TUE','WED','THU','FRI','SAT','SUN']
+  }
 ];
 const WALK_TIPS = [
   { label:'Duration', desc:'20–30 minutes. Start shorter if the knee is flared; build up by 5 minutes each week.' },
@@ -824,6 +980,18 @@ function getTodayIdx() {
   const d = new Date().getDay();
   return d === 0 ? 6 : d - 1;
 }
+function getPostOpWeekNum(weekOffset) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const dow = today.getDay();
+  const diffToMon = dow === 0 ? -6 : 1 - dow;
+  const mon = new Date(today); mon.setDate(today.getDate() + diffToMon + weekOffset * 7);
+  const diffDays = Math.round((mon - SURGERY_DATE) / 86400000);
+  return Math.floor(diffDays / 7) + 1;
+}
+function getPostOpProgram(weekOffset) {
+  const wn = Math.max(1, getPostOpWeekNum(weekOffset));
+  return POSTOP_PROGRAMS.find(p => wn >= p.weekStart && wn <= p.weekEnd) || POSTOP_PROGRAMS[POSTOP_PROGRAMS.length - 1];
+}
 function getTodayLabel() {
   const today = new Date();
   return today.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
@@ -837,13 +1005,22 @@ function renderWeek() {
     const label = state.weekOffset === 1 ? 'Next week' : state.weekOffset === -1 ? 'Last week' : state.weekOffset > 0 ? `${state.weekOffset} weeks ahead` : `${Math.abs(state.weekOffset)} weeks ago`;
     titleEl.innerHTML = label;
   }
-  document.getElementById('week-sub').textContent = getWeekRange();
-  const layout = isPostSurgery() ? POSTOP_LAYOUT : WEEK_LAYOUTS[state.sessCount];
+  const postOpMode = isPostSurgery();
+  let program = null, layout;
+  if (postOpMode) {
+    program = getPostOpProgram(state.weekOffset);
+    layout = program.pattern.map(k => program.groups[k]);
+    const wn = Math.max(1, getPostOpWeekNum(state.weekOffset));
+    document.getElementById('week-sub').textContent = `${getWeekRange()} · Week ${wn} post-op · ${program.phaseLabel}`;
+  } else {
+    layout = WEEK_LAYOUTS[state.sessCount];
+    document.getElementById('week-sub').textContent = getWeekRange();
+  }
   const todayIdx = getTodayIdx();
   let html = '';
   layout.forEach((day, i) => {
-    const icon = day.type === 'strength' ? '💪' : day.type === 'walk' ? '🚶' : day.type === 'postop' ? '🩹' : '😴';
-    const lbl = day.type === 'strength' ? SESSIONS[day.sid].label : day.type === 'walk' ? 'Walk / Bike' : day.type === 'postop' ? 'Recovery' : 'Rest';
+    const icon = day.icon || (day.type === 'strength' ? '💪' : day.type === 'walk' ? '🚶' : day.type === 'postop' ? '🩹' : '😴');
+    const lbl = day.label || (day.type === 'strength' ? SESSIONS[day.sid].label : day.type === 'walk' ? 'Walk / Bike' : day.type === 'postop' ? 'Recovery' : 'Rest');
     const isToday = state.weekOffset === 0 && i === todayIdx;
     html += `<div class="day-cell ${day.type}${isToday?' today':''}${i===state.selDay?' sel':''}" data-i="${i}">
       <span class="day-abbr">${DAY_ABBRS[i]}</span>
@@ -864,7 +1041,8 @@ function renderWeek() {
 function renderDayDetail() {
   const el = document.getElementById('day-detail');
   if (state.selDay === null) { el.innerHTML = ''; return; }
-  const layout = isPostSurgery() ? POSTOP_LAYOUT : WEEK_LAYOUTS[state.sessCount];
+  if (isPostSurgery()) { renderPostOpDayDetail(el); return; }
+  const layout = WEEK_LAYOUTS[state.sessCount];
   const day = layout[state.selDay];
   const abbr = DAY_ABBRS[state.selDay];
   const isToday = state.selDay === getTodayIdx();
@@ -889,25 +1067,6 @@ function renderDayDetail() {
       <div class="wt-section-hd">Stationary Bike</div>
       ${BIKE_TIPS.map(t=>`<div class="walk-tip"><div class="wt-label">${t.label}</div><div class="wt-desc">${t.desc}</div></div>`).join('')}
     </div>`;
-  } else if (day.type === 'postop') {
-    el.innerHTML = `<div class="day-detail w-detail">
-      <div class="dd-label">${dayLbl} · Early Recovery</div>
-      <div class="dd-title">Recovery Care Day</div>
-      <div class="dd-desc">Strength training is paused for now. This slot is dedicated to protecting the joint, controlling swelling, and rebuilding basic range of motion — the groundwork for getting back to real movement. This is general guidance only; always defer to your actual PT/surgeon protocol once you have it.</div>
-      <div class="dd-chips"><span class="dd-chip green">Follow PT protocol</span><span class="dd-chip green">Pain-free only</span><span class="dd-chip green">Ice + elevate after</span></div>
-    </div>
-    <div class="card">
-      <div class="wt-section-hd">Circulation &amp; Swelling Control</div>
-      ${POSTOP_TIPS_SWELLING.map(t=>`<div class="walk-tip"><div class="wt-label">${t.label}</div><div class="wt-desc">${t.desc}</div></div>`).join('')}
-    </div>
-    <div class="card">
-      <div class="wt-section-hd">Gentle Range of Motion</div>
-      ${POSTOP_TIPS_ROM.map(t=>`<div class="walk-tip"><div class="wt-label">${t.label}</div><div class="wt-desc">${t.desc}</div></div>`).join('')}
-    </div>
-    <div class="card">
-      <div class="wt-section-hd">Activation — Only If Cleared</div>
-      ${POSTOP_TIPS_ACTIVATION.map(t=>`<div class="walk-tip"><div class="wt-label">${t.label}</div><div class="wt-desc">${t.desc}</div></div>`).join('')}
-    </div>`;
   } else {
     el.innerHTML = `<div class="day-detail r-detail">
       <div class="dd-label">${dayLbl}</div>
@@ -915,6 +1074,34 @@ function renderDayDetail() {
       <div class="dd-desc">Full recovery. Sleep, gentle stretching, and good nutrition do the work today. The joint heals during rest, not during training.</div>
     </div>`;
   }
+}
+function renderPostOpDayDetail(el) {
+  const program = getPostOpProgram(state.weekOffset);
+  const groupKey = program.pattern[state.selDay];
+  const group = program.groups[groupKey];
+  const abbr = DAY_ABBRS[state.selDay];
+  const isToday = state.weekOffset === 0 && state.selDay === getTodayIdx();
+  const dayLbl = isToday ? 'Today' : abbr;
+  if (group.type === 'rest') {
+    el.innerHTML = `<div class="day-detail r-detail">
+      <div class="dd-label">${dayLbl} · ${program.phaseLabel}</div>
+      <div class="dd-title">${group.title}</div>
+      <div class="dd-desc">${group.desc}</div>
+    </div>`;
+    return;
+  }
+  let html = `<div class="day-detail w-detail">
+    <div class="dd-label">${dayLbl} · ${program.phaseLabel}</div>
+    <div class="dd-title">${group.title}</div>
+    ${group.note ? `<div class="dd-desc">${group.note}</div>` : ''}
+  </div>`;
+  group.cards.forEach(card => {
+    html += `<div class="card">
+      <div class="wt-section-hd">${card.heading}</div>
+      ${card.items.map(t=>`<div class="walk-tip"><div class="wt-label">${t.label}</div><div class="wt-desc">${t.desc}</div></div>`).join('')}
+    </div>`;
+  });
+  el.innerHTML = html;
 }
 
 // ═══════════════════════════════════════════════════
