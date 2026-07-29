@@ -106,6 +106,20 @@
     .dd-chip.warn{background:var(--warn-dim);border:1px solid var(--warn-border);color:var(--warn)}
     .view-btn{display:block;width:100%;margin-top:14px;padding:13px;background:var(--accent);color:#000;border:none;border-radius:14px;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:opacity .2s}
     .view-btn:active{opacity:.8}
+    .pt-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;gap:8px}
+    .pt-eyebrow{font-size:10px;font-weight:800;letter-spacing:.12em;color:var(--text3);text-transform:uppercase}
+    .pt-day{font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap}
+    .pt-bar{position:relative;height:8px;background:var(--card2);border-radius:6px;margin-bottom:10px}
+    .pt-fill{position:absolute;top:0;left:0;height:100%;background:var(--accent);border-radius:6px;transition:width .4s ease}
+    .pt-marker{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:var(--accent);border:3px solid var(--card);transform:translate(-50%,-50%);box-shadow:0 0 0 2px var(--accent-border);transition:left .4s ease}
+    .pt-labels{display:grid;grid-template-columns:repeat(4,1fr);margin-bottom:14px}
+    .pt-label{font-size:9px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--text3);text-align:center}
+    .pt-label:first-child{text-align:left}
+    .pt-label:last-child{text-align:right}
+    .pt-label.active{color:var(--accent)}
+    .pt-current{background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:14px;padding:12px 14px}
+    .pt-current-title{font-size:13px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.02em}
+    .pt-current-desc{font-size:12px;color:var(--text2);margin-top:5px;line-height:1.5}
     .walk-tip{padding:10px 0;border-bottom:1px solid var(--border)}
     .walk-tip:last-child{border-bottom:none;padding-bottom:0}
     .wt-icon{display:none}
@@ -297,6 +311,7 @@
     <!-- ══════════ EXERCISES ══════════ -->
     <div id="tab-exercises" class="tab-panel active">
       <div class="surgery-banner" id="surgery-banner"></div>
+      <div class="card" id="phase-tracker"></div>
       <div class="week-title" id="week-title">Loading</div>
       <div class="week-nav">
         <button class="week-nav-btn" id="week-prev">&#8249;</button>
@@ -460,7 +475,7 @@
         </div>
       </div>
 
-      <div class="section-label">Recovery Roadmap</div>
+      <div class="section-label" id="roadmap-section">Recovery Roadmap</div>
       <div class="tl-item"><div class="tl-line"><div class="tl-dot done"></div><div class="tl-bar"></div></div><div class="tl-content"><div class="tl-phase done">Done — Prehab</div><div class="tl-title">Built the Foundation</div><div class="tl-desc">Quads, glutes, and hips strengthened ahead of the procedure.</div></div></div>
       <div class="tl-item"><div class="tl-line"><div class="tl-dot done"></div><div class="tl-bar"></div></div><div class="tl-content"><div class="tl-phase done">Done — Procedure</div><div class="tl-title">BMAC + Bioplasty</div><div class="tl-desc">Completed July 22, 2026. Outpatient, 1–2 hours.</div></div></div>
       <div class="tl-item"><div class="tl-line"><div class="tl-dot now"></div><div class="tl-bar"></div></div><div class="tl-content">
@@ -532,6 +547,20 @@ function isPostSurgery() {
   const today = new Date(); today.setHours(0,0,0,0);
   return today >= SURGERY_DATE;
 }
+const REHAB_PHASES = [
+  { label:'Phase 1', range:'Mo 0–3', start:0, end:90,
+    title:'Structural Curing & Unloaded Cardio',
+    desc:'Quell subchondral bone marrow edema, protect the BMAC clot, and keep zero joint shearing under load.' },
+  { label:'Phase 2', range:'Mo 3–6', start:90, end:180,
+    title:'The Muscular Brake System',
+    desc:'Build a muscular shield around the joint — glute and quad hypertrophy — to absorb impact before it reaches the cartilage.' },
+  { label:'Phase 3', range:'Mo 6–9', start:180, end:270,
+    title:'Controlled "Beta Test" Run/Walk Matrix',
+    desc:'Micro-dose impact on soft surfaces while engineering cadence up to 175–180 steps per minute.' },
+  { label:'Phase 4', range:'Mo 9–12+', start:270, end:365,
+    title:'Hybrid Volume & Marathon Build',
+    desc:'25 miles/week hybrid model — 50% outdoor soft-surface running, 50% pool running / cycling cardio.' }
+];
 const PREHAB = {
   name: 'PREHAB ADD-ON',
   fmt: '3 ROUNDS — DO EVERY SESSION',
@@ -1057,10 +1086,41 @@ function renderPhase() {
 }
 
 // ═══════════════════════════════════════════════════
+// REHAB PHASE TRACKER
+// ═══════════════════════════════════════════════════
+function renderPhaseTracker() {
+  const wrap = document.getElementById('phase-tracker');
+  if (!wrap) return;
+  if (!isPostSurgery()) { wrap.style.display = 'none'; return; }
+  wrap.style.display = '';
+  const today = new Date(); today.setHours(0,0,0,0);
+  const daysPostOp = Math.round((today - SURGERY_DATE) / 86400000);
+  const totalSpan = REHAB_PHASES[REHAB_PHASES.length - 1].end;
+  let curIdx = REHAB_PHASES.findIndex(p => daysPostOp < p.end);
+  if (curIdx === -1) curIdx = REHAB_PHASES.length - 1;
+  const cur = REHAB_PHASES[curIdx];
+  const pct = Math.max(0, Math.min(100, (daysPostOp / totalSpan) * 100));
+  wrap.innerHTML = `
+    <div class="pt-head"><span class="pt-eyebrow">Rehab Roadmap</span><span class="pt-day">Day ${daysPostOp} post-op</span></div>
+    <div class="pt-bar"><div class="pt-fill" style="width:${pct}%"></div><div class="pt-marker" style="left:${pct}%"></div></div>
+    <div class="pt-labels">${REHAB_PHASES.map((p,i)=>`<span class="pt-label${i===curIdx?' active':''}">${p.label}</span>`).join('')}</div>
+    <div class="pt-current">
+      <div class="pt-current-title">${cur.label} · ${cur.range} — ${cur.title}</div>
+      <div class="pt-current-desc">${cur.desc}</div>
+    </div>
+    <button class="view-btn" id="pt-view-roadmap">View Full 4-Phase Plan &#8594;</button>`;
+  document.getElementById('pt-view-roadmap').addEventListener('click', () => {
+    switchTab('info');
+    setTimeout(() => document.getElementById('roadmap-section')?.scrollIntoView({ behavior:'smooth', block:'start' }), 50);
+  });
+}
+
+// ═══════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════
 renderPhase();
 renderSurgeryBanner();
+renderPhaseTracker();
 renderWeek();
 state.selDay = getTodayIdx();
 renderWeek();
