@@ -228,6 +228,25 @@
     .stat-n{font-size:22px;font-weight:900;color:var(--accent);line-height:1}
     .stat-l{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:4px;font-weight:700}
 
+    /* ── GOAL ── */
+    .goal-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+    .goal-label{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--text3)}
+    .goal-edit-btn{background:none;border:1px solid var(--border2);color:var(--text3);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:20px;cursor:pointer;transition:all .15s;flex-shrink:0}
+    .goal-edit-btn:active{background:var(--hover-bg)}
+    .goal-text{font-size:17px;font-weight:800;margin-top:6px;line-height:1.3}
+    .goal-countdown{display:flex;align-items:baseline;gap:6px;margin-top:12px}
+    .goal-count{font-size:28px;font-weight:900;color:var(--accent);letter-spacing:-.02em;line-height:1}
+    .goal-count-unit{font-size:12px;font-weight:700;color:var(--accent);opacity:.75;letter-spacing:.03em;text-transform:uppercase}
+    .goal-date{font-size:12px;color:var(--text3);margin-top:3px}
+    .goal-empty{font-size:13px;color:var(--text2);margin-top:6px;line-height:1.5}
+    .goal-input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:10px 12px;font-size:14px;color:var(--text);font-family:inherit;margin-bottom:8px}
+    .goal-input::placeholder{color:var(--text3)}
+    .goal-input-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
+    .goal-actions{display:flex;gap:8px;margin-top:4px}
+    .goal-save-btn{flex:1;padding:11px;background:var(--accent);color:#000;border:none;border-radius:12px;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
+    .goal-save-btn:active{opacity:.8}
+    .goal-cancel-btn{padding:11px 16px;background:none;border:1px solid var(--border2);color:var(--text3);border-radius:12px;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
+
     /* ── SURGERY COUNTDOWN ── */
     .surgery-banner{background:linear-gradient(135deg,rgba(255,112,67,.08),rgba(255,112,67,.03));border:1px solid var(--accent-border);border-radius:20px;padding:18px 20px;margin-bottom:20px}
     .surgery-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px}
@@ -311,6 +330,7 @@
     <!-- ══════════ EXERCISES ══════════ -->
     <div id="tab-exercises" class="tab-panel active">
       <div class="surgery-banner" id="surgery-banner"></div>
+      <div class="card" id="goal-card"></div>
       <div class="card" id="phase-tracker"></div>
       <div class="week-title" id="week-title">Loading</div>
       <div class="week-nav">
@@ -459,7 +479,7 @@
         <div class="rc-body">
           <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text"><strong>Procedure day:</strong> 1–2 hours, outpatient. Go home same day.</div></div>
           <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text"><strong>Weeks 1–2:</strong> Pain may temporarily increase — this is a normal inflammatory healing response.</div></div>
-          <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text"><strong>Weeks 4–8:</strong> Protected weight-bearing. Isometrics, pool, gentle range-of-motion work.</div></div>
+          <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text"><strong>Weeks 4–8:</strong> Protected weight-bearing. Isometrics, PT strength work, gentle range-of-motion work.</div></div>
           <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text"><strong>Weeks 6–12:</strong> First signs of improvement typically emerge. Gradual return to gym loading.</div></div>
           <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text"><strong>6–12 months:</strong> Full effect of the BMAC. Return-to-run protocol begins if healing is confirmed.</div></div>
         </div>
@@ -482,7 +502,7 @@
         <div class="tl-phase now">Phase 1 · Months 0–3 <span class="phase-pill" style="margin-left:6px;font-size:9px;padding:3px 8px;">Active Phase</span></div>
         <div class="tl-title">Structural Curing &amp; Unloaded Cardio</div>
         <div class="tl-desc"><strong>Target:</strong> Quell subchondral bone marrow edema, protect the BMAC clot, and keep zero joint shearing under load.</div>
-        <div class="dd-chips"><span class="dd-chip blue">Deep-water pool running</span><span class="dd-chip blue">High-cadence, zero-resistance cycling</span><span class="dd-chip blue">VMO quad sets</span><span class="dd-chip blue">Isometric core / glute work</span></div>
+        <div class="dd-chips"><span class="dd-chip blue">PT strength circuit</span><span class="dd-chip blue">Light bike or walk</span><span class="dd-chip blue">VMO quad sets</span><span class="dd-chip blue">Isometric core / glute work</span></div>
       </div></div>
       <div class="tl-item"><div class="tl-line"><div class="tl-dot fut"></div><div class="tl-bar"></div></div><div class="tl-content">
         <div class="tl-phase fut">Phase 2 · Months 3–6</div>
@@ -511,9 +531,9 @@
           <div class="q-section">Weight-Bearing &amp; Range of Motion</div>
           <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text">Adhere strictly to your surgeon's post-op protocol.</div></div>
           <div class="rc-bullet" style="margin-bottom:0"><div class="rc-dot">◆</div><div class="rc-bullet-text">Avoid deep knee flexion past 45° under body weight — no deep sitting, squatting, or lunging.</div></div>
-          <div class="q-section">Aerobic Preservation</div>
-          <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text"><strong>Deep-water pool running</strong> — once incisions are fully healed and cleared by your doctor, use a flotation belt in the deep end and cycle your legs with normal running mechanics. Preserves your cardiovascular base and neural running pathways with zero gravity or joint compression.</div></div>
-          <div class="rc-bullet" style="margin-bottom:0"><div class="rc-dot">◆</div><div class="rc-bullet-text"><strong>Zero-resistance cycling</strong> — high-cadence (90+ RPM) spinning on a stationary bike with a high saddle (soft 15° knee bend at the bottom) to flush synovial fluid through the joint without grinding.</div></div>
+          <div class="q-section">PT Strength Focus</div>
+          <div class="rc-bullet"><div class="rc-dot">◆</div><div class="rc-bullet-text"><strong>Full PT strength circuit</strong> — the primary driver of this phase. Quad sets, knee bends, leg press, sit-to-stand, single-leg curls, and band/gait work build the muscular shield around the joint early. See the Exercises tab for the current program.</div></div>
+          <div class="rc-bullet" style="margin-bottom:0"><div class="rc-dot">◆</div><div class="rc-bullet-text"><strong>Light bike or walk</strong> — easy stationary cycling (high saddle, low resistance, 80–90 RPM) or a conversational-pace walk on non-PT days to keep blood flowing without stressing the joint.</div></div>
           <div class="q-section">Muscle Activation</div>
           <div class="rc-bullet" style="margin-bottom:0"><div class="rc-dot">◆</div><div class="rc-bullet-text">Non-impact VMO and quad activation (straight leg raises with a locked knee) and heavy glute isometric work.</div></div>
         </div>
@@ -808,20 +828,39 @@ const POSTOP_PROGRAMS = [
     pattern:['A','B','A','B','A','B','R']
   },
   { weekStart:9, weekEnd:12,
-    phaseLabel:'Phase 1 · Weeks 9–12', subLabel:'Preparing for Closed-Chain Loading',
+    phaseLabel:'Phase 1 · Weeks 9–12', subLabel:'Full PT Strength Circuit',
     groups: {
-      A: { type:'postop', label:'Isometrics', title:'Progressive Isometric Strength',
-        cards:[{ heading:'Progressive Isometric Strength', items:[
-          {label:'Wall Sit Isometrics (30° Knee Bend)', desc:'4×30-second holds. Place a soft block between your knees to engage the adductors and VMO.'},
-          {label:'B-Stance Glute Bridges', desc:'3×10 reps per side, staggered foot position to progressively load one hip.'},
-          {label:'Standing Calf Raises', desc:'3×15 reps, double leg, slow 3-second descent.'},
-          {label:'Backward Walking', desc:'3×5 minutes on a flat surface or unpowered treadmill — toe-to-heel stroke to build VMO endurance without joint shearing.'}
-        ]}] },
-      B: { type:'walk', label:'Pool Interval', title:'Pool Running Intervals',
-        cards:[{ heading:'Pool Running Intervals', items:[
-          {label:'Warm-up', desc:'10 minutes easy pool run.'},
-          {label:'Main Set', desc:'10 × 1 minute hard pool sprint / 1 minute easy pool float.'},
-          {label:'Cool-down', desc:'5 minutes easy.'}
+      A: { type:'strength', label:'PT Circuit', title:'Full PT Strength Circuit',
+        cards:[
+          { heading:'Warm-Up (1 set)', items:[
+            {label:'Quad Sets', desc:'10 reps, 10 seconds on / 10 seconds off.'},
+            {label:'Knee Bends', desc:'10 reps.'},
+            {label:'Stationary Bike', desc:'10 minutes at 80 RPM.'}
+          ]},
+          { heading:'Strength Circuit (3 sets each)', items:[
+            {label:'Leg Lifts (4 lb ankle weight)', desc:'10 reps.'},
+            {label:'Side Leg Lifts (4 lb ankle weight)', desc:'10 reps.'},
+            {label:'Bridges', desc:'10 reps.'},
+            {label:'Leg Press — 2 Legs Up / 1 Leg Down', desc:'10 reps at 100 lbs. Push up with both legs, lower with one leg.'},
+            {label:'Leg Press — Single Leg', desc:'10 reps at 75 lbs.'},
+            {label:'Calf Raises', desc:'10 reps.'},
+            {label:'Single-Leg Sit to Stand (right leg, toe touch)', desc:'10 reps. Right leg does the work; left foot just lightly toe-touches for balance.'},
+            {label:'Sit to Stand (15 lb weight)', desc:'10 reps, holding a 15 lb weight.'},
+            {label:'Single-Leg Curl', desc:'10 reps at 35 lbs (or 25 lbs — confirm machine setting).'}
+          ]},
+          { heading:'Band & Gait Work (1 set)', items:[
+            {label:'Monster Walk (medium band)', desc:'5 steps, both directions.'},
+            {label:'Backwards Walk', desc:'10 steps, both directions.'}
+          ]},
+          { heading:'Step-Ups (3 sets)', items:[
+            {label:'Step-Ups (6" box)', desc:'5 reps.'}
+          ]}
+        ] },
+      B: { type:'walk', label:'Bike/Walk', title:'Light Bike or Walk',
+        cards:[{ heading:'Light Bike or Walk', items:[
+          {label:'Bike', desc:'20–30 minutes easy stationary cycling, high saddle, low resistance, 80–90 RPM.'},
+          {label:'Walk', desc:'Or, 20–30 minutes easy walk instead, whichever feels better on the knee that day.'},
+          {label:'Effort', desc:'Conversational pace throughout — this is active recovery, not a workout.'}
         ]}] },
       C: { type:'walk', label:'Long Cardio', title:'Long Aerobic Cross-Training',
         cards:[{ heading:'Long Aerobic Cross-Training', items:[
@@ -829,7 +868,7 @@ const POSTOP_PROGRAMS = [
         ]}] },
       R: { type:'rest', title:'Rest', desc:'Full rest and recovery.' }
     },
-    pattern:['A','B','A','B','A','C','R']
+    pattern:['A','B','B','A','B','C','R']
   },
   { weekStart:13, weekEnd:24,
     phaseLabel:'Phase 2 · Weeks 13–24', subLabel:'Sample Week — The Muscular Brake System',
@@ -960,7 +999,7 @@ const BIKE_TIPS = [
 const state = {
   tab:'exercises', sessCount:2, selDay:null,
   activeSession:0, expandedEx:null, expandedPrehab:null,
-  weekOffset:0
+  weekOffset:0, goalEditing:false
 };
 const tmr = { key:null, phase:null, secs:0, total:0, iv:null };
 
@@ -1293,6 +1332,76 @@ document.getElementById('week-next').addEventListener('click', () => {
 })();
 
 // ═══════════════════════════════════════════════════
+// TARGET GOAL
+// ═══════════════════════════════════════════════════
+function loadGoal() {
+  try { return JSON.parse(localStorage.getItem('ji_goal') || 'null'); } catch (e) { return null; }
+}
+function saveGoal(goal) {
+  localStorage.setItem('ji_goal', JSON.stringify(goal));
+}
+function clearGoal() {
+  localStorage.removeItem('ji_goal');
+}
+function daysUntil(dateStr) {
+  const target = new Date(dateStr + 'T00:00:00');
+  const today = new Date(); today.setHours(0,0,0,0);
+  return Math.round((target - today) / 86400000);
+}
+function renderGoalCard() {
+  const el = document.getElementById('goal-card');
+  if (!el) return;
+  const goal = loadGoal();
+  if (state.goalEditing || !goal) {
+    const g = goal || { text:'', date:'' };
+    const esc = s => (s || '').replace(/"/g,'&quot;');
+    el.innerHTML = `
+      <div class="goal-label">Target Goal</div>
+      <div class="goal-input-label">Goal</div>
+      <input type="text" class="goal-input" id="goal-text-input" placeholder="e.g. Run a marathon" value="${esc(g.text)}">
+      <div class="goal-input-label">Target date (optional)</div>
+      <input type="date" class="goal-input" id="goal-date-input" value="${g.date || ''}">
+      <div class="goal-actions">
+        <button class="goal-save-btn" id="goal-save">Save Goal</button>
+        ${goal ? `<button class="goal-cancel-btn" id="goal-cancel">Cancel</button>` : ''}
+      </div>`;
+    document.getElementById('goal-save').addEventListener('click', () => {
+      const text = document.getElementById('goal-text-input').value.trim();
+      const date = document.getElementById('goal-date-input').value;
+      if (!text && !date) { clearGoal(); } else { saveGoal({ text, date }); }
+      state.goalEditing = false;
+      renderGoalCard();
+    });
+    if (goal) {
+      document.getElementById('goal-cancel').addEventListener('click', () => {
+        state.goalEditing = false;
+        renderGoalCard();
+      });
+    }
+  } else {
+    let countdownHtml = '';
+    if (goal.date) {
+      const days = daysUntil(goal.date);
+      const dateFmt = new Date(goal.date + 'T00:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+      if (days > 0) countdownHtml = `<div class="goal-countdown"><span class="goal-count">${days}</span><span class="goal-count-unit">day${days===1?'':'s'} to go</span></div><div class="goal-date">${dateFmt}</div>`;
+      else if (days === 0) countdownHtml = `<div class="goal-countdown"><span class="goal-count">Today</span></div><div class="goal-date">${dateFmt}</div>`;
+      else countdownHtml = `<div class="goal-countdown"><span class="goal-count">${Math.abs(days)}</span><span class="goal-count-unit">day${Math.abs(days)===1?'':'s'} past</span></div><div class="goal-date">${dateFmt}</div>`;
+    }
+    el.innerHTML = `
+      <div class="goal-head">
+        <span class="goal-label">Target Goal</span>
+        <button class="goal-edit-btn" id="goal-edit">Edit</button>
+      </div>
+      <div class="goal-text">${goal.text || 'No goal text set'}</div>
+      ${countdownHtml}`;
+    document.getElementById('goal-edit').addEventListener('click', () => {
+      state.goalEditing = true;
+      renderGoalCard();
+    });
+  }
+}
+
+// ═══════════════════════════════════════════════════
 // SURGERY COUNTDOWN
 // ═══════════════════════════════════════════════════
 function renderSurgeryBanner() {
@@ -1367,6 +1476,7 @@ function renderPhaseTracker() {
 // ═══════════════════════════════════════════════════
 renderPhase();
 renderSurgeryBanner();
+renderGoalCard();
 renderPhaseTracker();
 renderWeek();
 state.selDay = getTodayIdx();
