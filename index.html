@@ -71,6 +71,12 @@
     .week-nav-btn{background:var(--card);border:1px solid var(--border);color:var(--text3);font-size:15px;width:30px;height:30px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:color .15s,border-color .15s}
     .week-nav-btn:hover{color:var(--text);border-color:var(--border2)}
     .day-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:16px}
+    @media(max-width:767px){
+      .day-strip{display:none}
+      .week-nav{margin-bottom:16px}
+      .week-nav-btn{width:38px;height:38px;font-size:18px}
+      .week-sub{font-size:13px}
+    }
     .day-cell{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:14px;cursor:pointer;border:1px solid transparent;transition:all .2s;position:relative}
     .day-cell:active{opacity:.7}
     .day-cell.strength{background:rgba(255,112,67,.07);border-color:rgba(255,112,67,.2)}
@@ -239,7 +245,7 @@
     .goal-count-unit{font-size:12px;font-weight:700;color:var(--accent);opacity:.75;letter-spacing:.03em;text-transform:uppercase}
     .goal-date{font-size:12px;color:var(--text3);margin-top:3px}
     .goal-empty{font-size:13px;color:var(--text2);margin-top:6px;line-height:1.5}
-    .goal-input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:10px 12px;font-size:14px;color:var(--text);font-family:inherit;margin-bottom:8px}
+    .goal-input{display:block;box-sizing:border-box;width:100%;max-width:100%;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:10px 12px;font-size:16px;color:var(--text);font-family:inherit;margin-bottom:8px;-webkit-appearance:none;appearance:none;min-height:42px}
     .goal-input::placeholder{color:var(--text3)}
     .goal-input-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
     .goal-actions{display:flex;gap:8px;margin-top:4px}
@@ -1035,25 +1041,65 @@ function getTodayLabel() {
   const today = new Date();
   return today.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
 }
+function isMobileView() {
+  return window.matchMedia('(max-width:767px)').matches;
+}
+function getSelectedDate() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const dow = today.getDay();
+  const diffToMon = dow === 0 ? -6 : 1 - dow;
+  const mon = new Date(today); mon.setDate(today.getDate() + diffToMon + state.weekOffset * 7);
+  const d = new Date(mon); d.setDate(mon.getDate() + (state.selDay === null ? getTodayIdx() : state.selDay));
+  return d;
+}
+function shiftDay(delta) {
+  let newSelDay = (state.selDay === null ? getTodayIdx() : state.selDay) + delta;
+  let weekDelta = 0;
+  while (newSelDay > 6) { newSelDay -= 7; weekDelta++; }
+  while (newSelDay < 0) { newSelDay += 7; weekDelta--; }
+  state.weekOffset += weekDelta;
+  state.selDay = newSelDay;
+}
 function renderWeek() {
   const titleEl = document.getElementById('week-title');
-  if (state.weekOffset === 0) {
-    const [weekday, ...rest] = getTodayLabel().split(', ');
-    titleEl.innerHTML = `${weekday}, <em>${rest.join(', ')}</em>`;
-  } else {
-    const label = state.weekOffset === 1 ? 'Next week' : state.weekOffset === -1 ? 'Last week' : state.weekOffset > 0 ? `${state.weekOffset} weeks ahead` : `${Math.abs(state.weekOffset)} weeks ago`;
-    titleEl.innerHTML = label;
-  }
+  const subEl = document.getElementById('week-sub');
+  const mobile = isMobileView();
   const postOpMode = isPostSurgery();
   let program = null, layout;
   if (postOpMode) {
     program = getPostOpProgram(state.weekOffset);
     layout = program.pattern.map(k => program.groups[k]);
-    const wn = Math.max(1, getPostOpWeekNum(state.weekOffset));
-    document.getElementById('week-sub').textContent = `${getWeekRange()} · Week ${wn} post-op · ${program.phaseLabel}`;
   } else {
     layout = WEEK_LAYOUTS[state.sessCount];
-    document.getElementById('week-sub').textContent = getWeekRange();
+  }
+
+  if (mobile) {
+    if (state.selDay === null) state.selDay = getTodayIdx();
+    const isToday = state.weekOffset === 0 && state.selDay === getTodayIdx();
+    const d = getSelectedDate();
+    const weekday = d.toLocaleDateString('en-US', { weekday:'long' });
+    const monthDay = d.toLocaleDateString('en-US', { month:'long', day:'numeric' });
+    titleEl.innerHTML = `${isToday ? 'Today' : weekday}, <em>${monthDay}</em>`;
+    if (postOpMode) {
+      const wn = Math.max(1, getPostOpWeekNum(state.weekOffset));
+      subEl.textContent = `Week ${wn} post-op · ${program.phaseLabel}`;
+    } else {
+      subEl.textContent = isToday ? "Today's session" : weekday;
+    }
+  } else {
+    if (state.weekOffset === 0) {
+      const [weekday, ...rest] = getTodayLabel().split(', ');
+      titleEl.innerHTML = `${weekday}, <em>${rest.join(', ')}</em>`;
+    } else {
+      const label = state.weekOffset === 1 ? 'Next week' : state.weekOffset === -1 ? 'Last week' : state.weekOffset > 0 ? `${state.weekOffset} weeks ahead` : `${Math.abs(state.weekOffset)} weeks ago`;
+      titleEl.innerHTML = label;
+    }
+    if (postOpMode) {
+      const wn = Math.max(1, getPostOpWeekNum(state.weekOffset));
+      subEl.textContent = `${getWeekRange()} · Week ${wn} post-op · ${program.phaseLabel}`;
+    } else {
+      subEl.textContent = getWeekRange();
+    }
   }
   const todayIdx = getTodayIdx();
   let html = '';
@@ -1306,10 +1352,17 @@ document.querySelectorAll('#sess-toggle .tog-btn').forEach(btn => {
 });
 
 document.getElementById('week-prev').addEventListener('click', () => {
-  state.weekOffset--; state.selDay = null; renderWeek();
+  if (isMobileView()) { shiftDay(-1); } else { state.weekOffset--; state.selDay = null; }
+  renderWeek();
 });
 document.getElementById('week-next').addEventListener('click', () => {
-  state.weekOffset++; state.selDay = null; renderWeek();
+  if (isMobileView()) { shiftDay(1); } else { state.weekOffset++; state.selDay = null; }
+  renderWeek();
+});
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(renderWeek, 150);
 });
 
 // ═══════════════════════════════════════════════════
