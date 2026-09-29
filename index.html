@@ -1358,7 +1358,7 @@ function renderGoalCard() {
     el.innerHTML = `
       <div class="goal-label">Target Goal</div>
       <div class="goal-input-label">Goal</div>
-      <input type="text" class="goal-input" id="goal-text-input" placeholder="e.g. Run a marathon" value="${esc(g.text)}">
+      <input type="text" class="goal-input" id="goal-text-input" placeholder="What's your goal?" value="${esc(g.text)}">
       <div class="goal-input-label">Target date (optional)</div>
       <input type="date" class="goal-input" id="goal-date-input" value="${g.date || ''}">
       <div class="goal-actions">
